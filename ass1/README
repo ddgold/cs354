@@ -5,6 +5,31 @@
  * of your team members and any special instructions for compiling, etc.,
  * if you did something besides the standard Makefile.
  *
- * Group Members: <FILL IN>
+ * Group Members: Ryan Brooks
+ *                Doug Goldstein
+ *
  */
 
+Performance Tests:
+1) solid = 18.01 sec, wire frame = 17.99 sec
+2) 17.99 sec
+3) 17.99 sec
+4) solid = 18.00 sec, wire frame = 18.03 sec
+5) 17.99 sec
+6) 18.02 sec
+7) 18.01 sec
+
+    The performance tests for all 9 tests took roughly the same amount of time.
+This is evident by the fact that the diference between the fastest and slowest
+tests was only .04 seconds.  Based on this observation, it does not matter which
+method you use to render these shapes, as they will all take about the same
+about of time.  Choose the method of creation that is easieast for you to
+implement.
+
+
+Extra Credit:
+    We added an extra display mode called UVsphere.  This mode renders a
+calculated sphere.  As well, we implement new key bindings to change the number
+of sectors used to produce the sphere.  'k' increase the longitude sections, and
+'K' reduces these sections.  'l' and 'L' does the same for the latitude
+sections.
