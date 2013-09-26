@@ -62,6 +62,10 @@ GLfloat radius = 1.0f;
 GLfloat height = 1.0f;
 int sides = 8;
 
+/* The dimensions for UVsphere */
+int longitudes = 5;
+int latitudes = 5;
+
 
 /* Global zoom factor.  Modified by user input. Initially 1.0 */
 GLfloat zoomFactor = 1.0; 
@@ -143,7 +147,7 @@ void myDisplay (void) {
 			draw_free_scene();
 			break;
 		case DM_SPHERE:
-			draw_sphere();
+			draw_sphere(longitudes, latitudes);
 			break;
 		default:
 			printf("myDisplay Warning: unrecognized Display Mode\n");
@@ -422,6 +426,30 @@ void myKeyHandler(unsigned char ch, int x, int y) {
     case 'v':
       vr_object = (vr_object + 1) % VR_MAX;
       print_vrml_object();
+      break;
+
+    /* Keystrokes for UVsphere */
+    
+    case 'k':
+      longitudes += 1;
+      break;
+    
+    case 'K':
+      if (longitudes > 5)
+      {
+        longitudes -= 1;
+      }
+      break;
+    
+    case 'l':
+      latitudes += 1;
+      break;
+    
+    case 'L':
+      if (latitudes > 5)
+      {
+        latitudes -= 1;
+      }
       break;
 
 		default:

@@ -43,7 +43,7 @@ void draw_cone_tri_arrays(void);
 void draw_cone_tri_calc(double height, double radius, int base_tri);
 void draw_vrml(void);
 void draw_free_scene(void);
-void draw_sphere(void);
+void draw_sphere(int longitudes, int latitudes);
 void print_disp_mode(void);
 void print_disp_style(void);
 
