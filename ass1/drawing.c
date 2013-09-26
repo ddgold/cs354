@@ -405,7 +405,7 @@ void draw_cone_tri_arrays(void)
  */
 void draw_cone_tri_calc(double height, double radius, int base_tri)
 {
-	double phi = 2 * 3.14 / base_tri;
+	double phi = 2.0 * M_PI / base_tri;
 	
 	GLfloat base[3] = {0.0f, 0.0f, 0.0f};
 	GLfloat top[3]  = {0.0f, 0.0f, height * 1.0f};
@@ -527,8 +527,47 @@ void draw_free_scene(void) {
 }
 
 
-void draw_sphere(void) {
-  printf("This will display a sphere\n");
+void draw_sphere(int longitudes, int latitudes) {
+  GLfloat a[3], b[3], c[3], d[3];
+  
+  double lon_deg = M_PI / longitudes;
+  double lat_deg = M_PI / latitudes;
+  
+  int i, j;
+  for (i = 0; i < longitudes; ++i)
+  {
+    for (j = 0; j < latitudes; ++j)
+    {
+      a[0] = sin( -M_PI_2 + M_PI * i / longitudes);
+      a[1] = cos(2 * j * lat_deg) * sin(i * lon_deg);
+      a[2] = sin(2 * j * lat_deg) * sin(i * lon_deg);
+      
+      b[0] = sin( -M_PI_2 + M_PI * i / longitudes);
+      b[1] = cos(2 * (j + 1) * lat_deg) * sin(i * lon_deg);
+      b[2] = sin(2 * (j + 1) * lat_deg) * sin(i * lon_deg);
+      
+      c[0] = sin( -M_PI_2 + M_PI * (i + 1) / longitudes);
+      c[1] = cos(2 * (j + 1) * lat_deg) * sin((i + 1) * lon_deg);
+      c[2] = sin(2 * (j + 1) * lat_deg) * sin((i + 1) * lon_deg);
+      
+      d[0] = sin( -M_PI_2 + M_PI * (i + 1) / longitudes);
+      d[1] = cos(2 * j * lat_deg) * sin((i + 1) * lon_deg);
+      d[2] = sin(2 * j * lat_deg) * sin((i + 1) * lon_deg);
+      
+      
+      
+      glBegin(GL_QUADS);
+      
+      glColor3f((GLfloat)(rand() % 10)/10, (GLfloat)(rand() % 10)/10, (GLfloat)(rand() % 10)/10);
+      
+      glVertex3fv(a);
+      glVertex3fv(b);
+      glVertex3fv(c);
+      glVertex3fv(d);
+        
+      glEnd();
+    }
+  }
 }
 
 /* Prints to stdout the current display mode */
