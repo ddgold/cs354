@@ -433,15 +433,13 @@ void draw_cone_tri_calc(double height, double radius, int base_tri)
 	    b[1] = radius * sin((i + 1) * phi) * 1.0f;
 	  }
 	  
+	  glColor3f(0.0f, 0.0f, 1.0f);
 	  
 	  // Draw base triangle
 	  glBegin(GL_TRIANGLES);
 
-    glColor3f(0.0f, 0.0f, 1.0f);
 	  glVertex3fv(base);
-	  glColor3f(0.0f, 1.0f, 0.0f);
 	  glVertex3fv(a);
-	  glColor3f(1.0f, 0.0f, 0.0f);
 	  glVertex3fv(b);
     
     glEnd();
@@ -449,11 +447,8 @@ void draw_cone_tri_calc(double height, double radius, int base_tri)
     // Draw side triangle
     glBegin(GL_TRIANGLES);
 
-    glColor3f(0.0f, 0.0f, 1.0f);
 	  glVertex3fv(top);
-	  glColor3f(0.0f, 1.0f, 0.0f);
 	  glVertex3fv(a);
-	  glColor3f(1.0f, 0.0f, 0.0f);
 	  glVertex3fv(b);
     
     glEnd();
@@ -527,7 +522,7 @@ void draw_free_scene(void) {
 }
 
 
-void draw_sphere(int longitudes, int latitudes) {
+void draw_UVsphere(int longitudes, int latitudes) {
   GLfloat a[3], b[3], c[3], d[3];
   
   double lon_deg = M_PI / longitudes;
@@ -536,30 +531,30 @@ void draw_sphere(int longitudes, int latitudes) {
   int i, j;
   for (i = 0; i < longitudes; ++i)
   {
+    /*
+     * Calculate and set x cordinent, 
+     * these don't change for sectors at the same same longitude
+     */ 
+    a[0] = b[0] = sin( -M_PI_2 + M_PI * i / longitudes);
+    c[0] = d[0] = sin( -M_PI_2 + M_PI * (i + 1) / longitudes);
+      
     for (j = 0; j < latitudes; ++j)
     {
-      a[0] = sin( -M_PI_2 + M_PI * i / longitudes);
       a[1] = cos(2 * j * lat_deg) * sin(i * lon_deg);
-      a[2] = sin(2 * j * lat_deg) * sin(i * lon_deg);
-      
-      b[0] = sin( -M_PI_2 + M_PI * i / longitudes);
       b[1] = cos(2 * (j + 1) * lat_deg) * sin(i * lon_deg);
-      b[2] = sin(2 * (j + 1) * lat_deg) * sin(i * lon_deg);
-      
-      c[0] = sin( -M_PI_2 + M_PI * (i + 1) / longitudes);
       c[1] = cos(2 * (j + 1) * lat_deg) * sin((i + 1) * lon_deg);
-      c[2] = sin(2 * (j + 1) * lat_deg) * sin((i + 1) * lon_deg);
-      
-      d[0] = sin( -M_PI_2 + M_PI * (i + 1) / longitudes);
       d[1] = cos(2 * j * lat_deg) * sin((i + 1) * lon_deg);
+      
+      a[2] = sin(2 * j * lat_deg) * sin(i * lon_deg);
+      b[2] = sin(2 * (j + 1) * lat_deg) * sin(i * lon_deg);
+      c[2] = sin(2 * (j + 1) * lat_deg) * sin((i + 1) * lon_deg);
       d[2] = sin(2 * j * lat_deg) * sin((i + 1) * lon_deg);
       
       
+      glColor3f(i % 2, j % 2, 0.5f);
       
       glBegin(GL_QUADS);
-      
-      glColor3f((GLfloat)(rand() % 10)/10, (GLfloat)(rand() % 10)/10, (GLfloat)(rand() % 10)/10);
-      
+            
       glVertex3fv(a);
       glVertex3fv(b);
       glVertex3fv(c);
@@ -600,8 +595,8 @@ void print_disp_mode( void ) {
         case DM_FREE_SCENE:
             printf("Display Mode: Freeform scene\n");
             break;
-        case DM_SPHERE:
-            printf("Display Mode: Sphere\n");
+        case DM_UVSPHERE:
+            printf("Display Mode: UVsphere\n");
             break;
         default:
 			      printf("Warning: unknown display mode\n");

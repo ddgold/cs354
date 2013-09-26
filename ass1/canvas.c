@@ -63,8 +63,8 @@ GLfloat height = 1.0f;
 int sides = 8;
 
 /* The dimensions for UVsphere */
-int longitudes = 5;
-int latitudes = 5;
+int longitudes = 6;
+int latitudes = 6;
 
 
 /* Global zoom factor.  Modified by user input. Initially 1.0 */
@@ -146,8 +146,8 @@ void myDisplay (void) {
 		case DM_FREE_SCENE:
 			draw_free_scene();
 			break;
-		case DM_SPHERE:
-			draw_sphere(longitudes, latitudes);
+		case DM_UVSPHERE:
+			draw_UVsphere(longitudes, latitudes);
 			break;
 		default:
 			printf("myDisplay Warning: unrecognized Display Mode\n");
@@ -435,7 +435,7 @@ void myKeyHandler(unsigned char ch, int x, int y) {
       break;
     
     case 'K':
-      if (longitudes > 5)
+      if (longitudes > 6)
       {
         longitudes -= 1;
       }
@@ -446,7 +446,7 @@ void myKeyHandler(unsigned char ch, int x, int y) {
       break;
     
     case 'L':
-      if (latitudes > 5)
+      if (latitudes > 6)
       {
         latitudes -= 1;
       }

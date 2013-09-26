@@ -18,7 +18,7 @@
 #define DM_CONE_TRI_CALC        6
 #define DM_VRML                 7
 #define DM_FREE_SCENE           8
-#define DM_SPHERE               9
+#define DM_UVSPHERE             9
 #define DM_MAX                  10
 
 /* The current display mode */
@@ -43,7 +43,7 @@ void draw_cone_tri_arrays(void);
 void draw_cone_tri_calc(double height, double radius, int base_tri);
 void draw_vrml(void);
 void draw_free_scene(void);
-void draw_sphere(int longitudes, int latitudes);
+void draw_UVsphere(int longitudes, int latitudes);
 void print_disp_mode(void);
 void print_disp_style(void);
 
