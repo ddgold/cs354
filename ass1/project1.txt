@@ -1,23 +1,51 @@
 Project 1 Individual Written Questions
 
-Name:
-Email Address:
+Name: Doug Goldstein
+Email Address: ddgold@me.com
 
-1.
+1. This is a situation similar to that of display mode 5, where you have two
+arrays, one that contains a list of vertices, and another that is a list of
+vertex indices.  To produce an object, one would need to loop though the array
+of vertex indices, incrementing by a set number each loop; three for triangle,
+four for a quadrilateral, etc.  The vertex indices would be multiplied by 3,
+assuming three 3D space, to get the correct index.  Use theses indices to look
+up the corresponding coordinates in the vertex array and render the object.
+Neither arrays would need to be manipulated, and no additional data structures
+would be necessary.
 
 
-2.
+2. There are three different default matrix modes in OpenGL, each tell which
+matrix stack is to be modified by the matrix operations.  The first is
+GL_MODELVIEW that operates on the modelview matrix stack.  Second is
+GL_PROJECTION which changes the projections matrix stack.  Last is GL_TEXTURE
+that modifies the texture matrix stack.
 
  
-3.
+3. 
 
 
-4.
+4. A single frame buffer is the case when one has a single chunk of memory that
+is used to display the current frame, as well as rendering the next frame.
+Although this uses half the memory of a double frame buffering, it can result in
+artifacting, where part of the screen has been updated, and such is used only
+when memory is a constraint.  A double frame buffer uses two chunks of memory,
+the back buffer, which is used to render the next frame, and the front buffer,
+which holds the current frame.  When the the next frame is finished rendering,
+the two buffers switch, with the back buffer becoming the front, and vice-versa.
+The double buffer eliminates the chance of half updated screens.
 
 
 5.
 
 
-6.
+6. The final transformation matrix would be as follows:
 
+|1 0 0 2|   | cos(225) 0 sin(225) 0|   |1 0 0 -4|
+|0 1 0 3|   |    0     1    0     0|   |0 1 0  1|
+|0 0 1 1| * |-sin(225) 0 cos(225) 0| * |0 0 1  0| =
+|0 0 0 1|   |    0     0    0     1|   |0 0 0  1|
 
+| cos(225)  0  sin(225)  2 - 4 * cos(225)|
+|    0      1     0             4        |
+|-sin(225)  0  cos(225)  1 + 4 * sin(225)|
+|    0      0     0             1        |

@@ -30,6 +30,6 @@ implement.
 Extra Credit:
     We added an extra display mode called UVsphere.  This mode renders a
 calculated sphere.  As well, we implement new key bindings to change the number
-of sectors used to produce the sphere.  'k' increase the longitude sections, and
-'K' reduces these sections.  'l' and 'L' does the same for the latitude
+of sectors used to produce the sphere.  'K' increase the longitude sections, and
+'k' reduces these sections.  'L' and 'l' does the same for the latitude
 sections.
