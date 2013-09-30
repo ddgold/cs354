@@ -392,33 +392,39 @@ void myKeyHandler(unsigned char ch, int x, int y) {
     
     case 'I':
       radius += 0.1f;
+      printf("Radius increased by 0.1\n");
       break;
     
     case 'i':
       if (radius > 0.11f)
       {
+      printf("Radius decreased by 0.1\n");
         radius -= 0.1f;
       }
       break;
     
     case 'O':
       height += 0.1f;
+      printf("Height increased by 0.1\n");
       break;
     
     case 'o':
       if (height > 0.1f)
       {
+        printf("Height decreased by 0.1\n");
         height -= 0.1f;
       }
       break;
     
     case 'P':
       sides += 1;
+      printf("Sides increased by 1\n");
       break;
     
     case 'p':
       if (sides > 3)
       {
+        printf("Sides decreased by 1\n");
         sides -= 1;
       }
       break;
@@ -430,24 +436,28 @@ void myKeyHandler(unsigned char ch, int x, int y) {
 
     /* Keystrokes for UVsphere */
     
-    case 'k':
+    case 'K':
       longitudes += 1;
+      printf("Longitude segments increased by 1\n");
       break;
     
-    case 'K':
+    case 'k':
       if (longitudes > 6)
       {
+        printf("Longitude segments decreased by 1\n");
         longitudes -= 1;
       }
       break;
     
-    case 'l':
+    case 'L':
+      printf("Latitude segments increased by 1\n");
       latitudes += 1;
       break;
     
-    case 'L':
+    case 'l':
       if (latitudes > 6)
       {
+        printf("Latitude segments decreased by 1\n");
         latitudes -= 1;
       }
       break;
