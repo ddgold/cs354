@@ -25,9 +25,14 @@ Lsystem::Lsystem (char* rules, char* sequence)
   // Must verify all characters in sequence are valid rules
   for (int i = 0; i < strlen(sequence); ++i)
   {
-    assert (strchr(_rules, sequence[i]) != NULL);
+    if (strchr(_rules, sequence[i]) == NULL)
+    {
+      cout << sequence[i] << " is not a valid rule, double check input" << endl;
+      assert (0);
+    }
   }
   _sequence = sequence;
+  _curMatrix = new float[MATRIX];
 }
 
 
@@ -47,7 +52,7 @@ void Lsystem::execute (int i)
     // Loop through each rule in _sequence
     for (int c = 0; c < strlen(_sequence); ++c)
     {
-      switch (c)
+      switch (_sequence[c])
       {
         case 'A':
           ruleA();
@@ -69,6 +74,8 @@ void Lsystem::execute (int i)
           break;
           
         default:
+          cout << "Something wrong happend, you shouldn't be here." << endl;
+          assert(0);
           break;
       }
       
@@ -83,27 +90,25 @@ void Lsystem::execute (int i)
 // -----
 void Lsystem::ruleA ()
 {
-  cout << "Not Implemented" << endl;
-  assert (0);
+  cout << "Rule A" << endl;
   return;
 }
 
 void Lsystem::ruleB ()
 {
-  cout << "Not Implemented" << endl;
-  assert (0);
+  cout << "Rule B" << endl;
   return;
 }
 
 void Lsystem::ruleC ()
 {
-  cout << "Not Implemented" << endl;
-  assert (0);
+  cout << "Rule C" << endl;
   return;
 }
 
 void Lsystem::push()
 {
+  cout << "Push" << endl;
   float* temp = new float[16];
   copy (MATRIX, _curMatrix, temp);
   _matrixStack.push (temp);
@@ -111,6 +116,7 @@ void Lsystem::push()
 
 void Lsystem::pop()
 {
+  cout << "Pop" << endl;
   float* temp = _matrixStack.top();
   copy (MATRIX, temp, _curMatrix);
   _matrixStack.pop ();

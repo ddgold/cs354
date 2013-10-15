@@ -28,3 +28,9 @@ plant: drawplant.cpp drawplant.h plant.cpp readppm.cpp
 
 clean:
 	rm -f plant *.o core
+
+test:
+	g++ testLsystem.cpp Lsystem.cpp -o system
+	clear
+	clear
+	./system
