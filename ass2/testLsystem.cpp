@@ -1,6 +1,6 @@
 #include "Lsystem.h"
 
-int main()
+void matrix_functions ()
 {
   Lsystem system = Lsystem((char*)"ABC[]", (char*)"A");
   
@@ -85,4 +85,12 @@ int main()
   cout << endl << "Clear Works" << endl;
   
   cout << endl << "All Matrix Functions Work!" << endl << endl;
+}
+
+int main()
+{
+  //matrix_functions ();
+  Lsystem system = Lsystem((char*)"ABC[]", (char*)"ABAAB[BC][BC][BC]AA");
+      
+  system.execute (5);
 }

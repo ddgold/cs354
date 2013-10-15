@@ -1,3 +1,9 @@
+// ----------------
+// ----------------
+// No Longer in Use
+// ----------------
+// ----------------
+
 #include <iostream>
 #include <cassert>
 #include <cmath>
@@ -159,3 +165,58 @@ class Matrix
       }
     }
 };
+
+
+
+
+    Scalar translate (float x, float y, float z, Scalar that)
+    {
+      Matrix temp = {1,0,0,x,
+                        0,1,0,y,
+                        0,0,1,z,
+                        0,0,0,1};
+     return temp.vectorMultiply(that);  
+    }
+    
+    //the point is a scalar
+    
+   
+    
+    Scalar rotateX(float degree, Scalar that)
+    {
+       //turn degree into radians 
+       float rads = (degree/360.0)*(2*M_PI);
+       
+       Matrix temp = {1,0,0,0,
+                        0,cos(rads),-1*sin(rads),0,
+                        0,sin(rads),cos(rads),0,
+                        0,0,0,1};
+      return temp.vectorMultiply(that);   
+        
+    }
+    
+    Scalar rotateY(float degree, Scalar that)
+    {
+       //turn degree into radians 
+       float rads = (degree/360.0)*(2*M_PI);
+       
+       Matrix temp = {cos(rads),0,sin(rads),0,
+                         0,1,0,0,
+                         -sin(rads),0,cos(rads),0,
+                         0,0,0,1};
+       return temp.vectorMultiply(that); 
+        
+    }
+    
+    Scalar rotateZ(float degree, Scalar that)
+    {
+       //turn degree into radians 
+       float rads = (degree/360.0)*(2*M_PI);
+       
+       Matrix temp = {cos(rads),-1*sin(rads),0,0,
+                         sin(rads),cos(rads),0,0,
+                         0,0,1,0,
+                         0,0,0,1};
+        return temp.vectorMultiply(that); 
+        
+    }
