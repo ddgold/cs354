@@ -20,8 +20,14 @@ GL_MODELVIEW that operates on the modelview matrix stack.  Second is
 GL_PROJECTION which changes the projections matrix stack.  Last is GL_TEXTURE
 that modifies the texture matrix stack.
 
- 
-3. 
+
+3. To display multiple views of the same scene at the same time, one would need
+to use viewports.  Defined using the glViewport function, a viewport is used to
+determine what region of the window that the final image will be mapped to.
+With that in mind, it would be easy to create three viewports each with height
+and width equal to half that of the whole window.  Within each viewport, the
+camera would not need to be moved, instead the scene would be rotated to desire
+side.  This rotation would be done by changed the medelview matrix.
 
 
 4. A single frame buffer is the case when one has a single chunk of memory that
@@ -35,17 +41,22 @@ the two buffers switch, with the back buffer becoming the front, and vice-versa.
 The double buffer eliminates the chance of half updated screens.
 
 
-5.
+5. A line segment could easily be represented by a point-slope form
+(y - y1 = m(x - x1)) equation.  This particular representation of a line is great
+because it can be calculated easily with simple a single point and either
+the slope or another point.  Compare this to standard form (ax + by + c = 0),
+which requires the calculation of constants, a, b, and c, or slope-intercept
+form (y = mx + b), which requires the slope and the y-intercept.
 
 
 6. The final transformation matrix would be as follows:
 
-|1 0 0 2|   | cos(225) 0 sin(225) 0|   |1 0 0 -4|
-|0 1 0 3|   |    0     1    0     0|   |0 1 0  1|
-|0 0 1 1| * |-sin(225) 0 cos(225) 0| * |0 0 1  0| =
-|0 0 0 1|   |    0     0    0     1|   |0 0 0  1|
+|1  0  0  2|   | cos(225)  0  sin(225)  0|   |1  0  0 -4|
+|0  1  0  3|   |    0      1     0      0|   |0  1  0  1|
+|0  0  1  1| * |-sin(225)  0  cos(225)  0| * |0  0  1  0| =
+|0  0  0  1|   |    0      0     0      1|   |0  0  0  1|
 
-| cos(225)  0  sin(225)  2 - 4 * cos(225)|
-|    0      1     0             4        |
-|-sin(225)  0  cos(225)  1 + 4 * sin(225)|
-|    0      0     0             1        |
+      | cos(225)  0  sin(225)  2 - 4 * cos(225)|
+      |    0      1     0             4        |
+      |-sin(225)  0  cos(225)  1 + 4 * sin(225)|
+      |    0      0     0             1        |
