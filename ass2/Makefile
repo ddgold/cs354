@@ -23,14 +23,11 @@ endif
 # Uncomment the following line if you are using Mesa
 #LIBS = -lglut -lMesaGLU -lMesaGL -lm
 
-plant: drawplant.cpp drawplant.h plant.cpp readppm.cpp
-	${CC} ${CFLAGS} ${INCLUDE} -o plant ${LIBDIR} drawplant.cpp plant.cpp readppm.cpp ${LIBS}
+plant: drawplant.cpp drawplant.h plant.cpp readppm.cpp helper.h helper.cpp
+	${CC} ${CFLAGS} ${INCLUDE} -o plant ${LIBDIR} drawplant.cpp plant.cpp readppm.cpp helper.cpp ${LIBS}
 
 clean:
-	rm -f plant *.o core
+	rm -f plant helper system *.o core
 
-test:
-	g++ testLsystem.cpp Lsystem.cpp -o system
-	clear
-	clear
-	./system
+helper:
+	g++ testHelper.cpp helper.cpp -o helper

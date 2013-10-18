@@ -7,6 +7,7 @@
  * Group Members: <FILL IN>
  */
 
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -16,8 +17,10 @@
 #include <math.h>
 #include <assert.h>
 
+#include "helper.h"
 #include "common.h"
 #include "drawplant.h"
+
 
 /* GLOBAL VARAIBLES */
 /* (storage is actually allocated here) */
@@ -29,6 +32,61 @@ int Y_OFF = 10;	/* window y offset */
 /* local function declarations */
 void display(void);
 void init(void);
+int endCanvas(int);
+
+
+void myKeyHandler(unsigned char ch, int x, int y)
+{
+  switch (ch)
+  {
+    case '/':
+      rotateCamera(5, Y_AXIS);
+      break;
+      
+    case '?':
+      rotateCamera(-5, Y_AXIS);
+      break;
+      
+    case 'q':
+      endCanvas(0);
+      break;
+      
+    case 'a':
+      if (_iterations < 10)
+      {
+        ++_iterations;
+      }
+      break;
+      
+    case 's':
+      if (_iterations > 0)
+      {
+        --_iterations;
+      }
+      break;
+      
+    case 'p':
+    
+      break;
+    
+    default:
+      return;
+      break;
+  }
+  
+  display ();
+}
+
+int endCanvas(int status) {
+  printf("\nQuitting canvas.\n\n");
+  fflush(stdout);
+
+  exit(status);
+}
+
+
+
+
 
 int main (int argc, char** argv) {
   glutInit(&argc,argv);
@@ -37,7 +95,9 @@ int main (int argc, char** argv) {
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
   glutCreateWindow("plant");
   init();
+  //glFrustum(-100.0, 100.0, -50.0,50.0,-50.0,50.0  );
   glutDisplayFunc(display);
+	glutKeyboardFunc(myKeyHandler);
   glutMainLoop();
   return 0;
 }
@@ -46,7 +106,7 @@ void init() {
   glClearColor(0.0, 0.0, 0.0, 0.0);  
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(-40.0, 40.0, -40.0, 40.0, -10.0, 10.0);
+  glOrtho(-40.0, 40.0, -10.0, 70.0, -10.0, 10.0);
 }
 
 
@@ -54,10 +114,9 @@ void display() {
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+   cout << "display\n" << print(MATRIX, _curMatrix) << endl;
 	/* See drawplant.c for the definition of this routine */
-	drawPlant();
-
+	drawPlant(_iterations, 10.0f);
 
     glFlush();  /* Flush all executed OpenGL ops finish */
 
