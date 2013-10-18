@@ -14,11 +14,13 @@
 #include <assert.h>
 #include <iostream>
 
+#include "helper.h"
 #include "common.h"
 #include "drawplant.h"
 #include "readppm.h"
 
 using namespace std;
+
 
 /* Takes a 2D matrix in row-major order, and loads the 3D matrix which
    does the same trasformation into the OpenGL MODELVIEW matrix, in
@@ -57,12 +59,44 @@ void load3DMatrix(
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(M3D);
-	
 }
 
-void drawLeaf(void) {
-	/* ADD YOUR CODE to make the 2D leaf a 3D extrusion */
-	glColor3f(0.1,0.9,0.1); 
+void load3DMatrix (const float* mView)
+{
+  load3DMatrix (mView[0], mView[1], mView[2], mView[3], 
+                mView[4], mView[5], mView[6], mView[7], 
+                mView[8], mView[9], mView[10], mView[11],
+                mView[12], mView[13], mView[14], mView[15]);
+}
+
+void drawLeaf (int i, float s)
+{
+  if (i == 0)
+  {   
+    drawActualLeaf ();
+  }
+  else
+  {
+    drawBranch (i - 1, s);
+    push ();
+    turnLeft (i -1, s);
+    drawLeaf (i - 1, s);
+    pop ();
+    push ();
+    turnRight (s);
+    drawLeaf (i - 1, s);
+    pop ();
+  }
+
+}
+
+
+void drawActualLeaf (void)
+{
+  /*
+  cout << "leaf\n" << print(MATRIX, _curMatrix) << endl;
+  load3DMatrix (_curMatrix);
+  glColor3f(0.1,0.9,0.1); 
 	glBegin(GL_POLYGON);
 	glVertex2f(0.0,0.0);
 	glVertex2f(1.0,0.7);
@@ -73,41 +107,230 @@ void drawLeaf(void) {
 	glVertex2f(-1.3,1.8);
 	glVertex2f(-1.0,0.7);
 	glEnd();
-}
-
-void drawBranch(void) {
-	/* ADD YOUR CODE to make the 2D branch a 3D extrusion */
-	glColor3f(0.54,0.27,0.07); 
-	glBegin(GL_POLYGON);
-	glVertex2f(1.0,0.0);
-	glVertex2f(1.0,6.0);
-	glVertex2f(-1.0,6.0);
-	glVertex2f(-1.0,0.0);
+	*/
+	
+  GLfloat vertices[] = {
+      -0.5f,  0.0f, 0.0f,
+       1.0f,  0.0f, 0.0f,     
+       9.0f, -1.0f, 1.0f, 
+       8.0f,  2.0f, 0.0f, 
+      16.0f,  8.0f, 1.0f, 
+      13.0f,  9.0f, 0.0f, 
+      15.0f, 14.0f, -1.0f, 
+      10.0f, 13.0f, 0.0f, 
+       9.0f, 15.0f, 1.0f, 
+       5.0f, 12.0f, 0.0f, 
+       7.0f, 20.0f, 1.0f, 
+       4.0f, 19.0f, 0.0f, 
+       0.0f, 25.0f, -1.0f, 
+      -4.0f, 19.0f, 0.0f, 
+      -7.0f, 20.0f, 1.0f, 
+      -5.0f, 12.0f, 0.0f, 
+      -9.0f, 15.0f, 1.0f, 
+     -10.0f, 13.0f, 0.0f, 
+     -15.0f, 14.0f, -1.0f, 
+     -13.0f,  9.0f, 0.0f, 
+     -16.0f,  8.0f, 1.0f, 
+      -8.0f,  2.0f, 0.0f, 
+      -9.0f, -1.0f, 0.0f, 
+      -1.0f,  0.0f, 0.0f};
+	
+	
+  //glColor3f(0.1,0.9,0.1); 
+  glBegin(GL_POLYGON);
+	
+	for (int i = 0; i < 75; i+=3)
+	{
+    glColor3f((GLfloat)(rand() % 10)/10 + .1, 0, 0);
+	  glVertex3f(vertices[i]/8, vertices[i+1]/8, vertices[i+2]/8);
+	}
+	
 	glEnd();
 }
 
-/*
- * Draws the plant.
- *
- * ADD YOUR CODE and modify the function to take an L-system depth and
- * any other necessary arguments.
- */
-void drawPlant(void) {
+void drawBranch (int i, float s)
+{
+  if (i == 0)
+  {
+    drawActualBranch (s);
+  }
+  else
+  {
+    drawBranch (i - 1, s * 1.25);
+  }
+}
 
-	/* Load a hard-coded rotation matrix of -30 degrees about positive z */
-	/* This matrix is only here as an example, and can be removed */
-	load2DMatrix(
-	       sqrt(3.0)/2.0, -1.0/2.0,      0.0,
-		   1.0/2.0,       sqrt(3.0)/2.0, 0.0,
-		   0.0,           0.0,           1.0);
+void drawActualBranch (float s)
+{
+	cout << "branch\n" << print(MATRIX, _curMatrix) << endl;
+  
+  glColor3f(0.54,0.27,0.07); 
+	
+	
+	GLfloat vertices[] = {0.5,  0.0, 0.0,
+                        0.5,  s,   0.0,
+	                      -0.5, s,   0.0,
+	                      -0.5, 0.0, 0.0,
+	                      0.5,  0.0, 0.5,
+                        0.5,  s,   0.5,
+	                      -0.5, s,   0.5,
+	                      -0.5, 0.0, 0.5};
+	                      
+	GLfloat indices[] =  {0, 1, 2, 3,
+	                      4, 5, 1, 0,
+	                      7, 6, 5, 4,
+	                      3, 2, 6, 7,
+	                      4, 0, 3, 7,
+	                      2, 1, 5, 6};               
+	
+	int index1, index2, index3, index4;
+	for (int i = 0; i < 24; i += 4)
+	{
+		index1 = indices[i] * 3;
+		index2 = indices[i+1] * 3;
+		index3 = indices[i+2] * 3;
+    index4 = indices[i+3] * 3;
 
-	/*
-	 * The location of the leaf and branch will not look right until
-	 * transformation matrices are implmented.
-	 */
-	drawLeaf();
+		glBegin(GL_QUADS);
 
-	drawBranch();
+		glVertex3fv( &(vertices[index1]) );
+		glVertex3fv( &(vertices[index2]) );
+		glVertex3fv( &(vertices[index3]) );
+		glVertex3fv( &(vertices[index4]) );
+
+		glEnd();
+	}
+  
+  
+  /*
+  glColor3f(184.0f/256.0f, 134.0f/256.0f, 11.0f/255.0f);
+  
+  //glBegin(GL_POLYGON);
+  
+	GLUquadric* qobj;
+	qobj = gluNewQuadric();
+	
+	gluQuadricNormals(qobj, GLU_SMOOTH);
+	float base_diameter;
+	float length;
+	length = _length;
+  base_diameter	= sqrt(_length);
+	gluCylinder(qobj, s/8, s/9, s, 16, 16);
+	*/
+}
+
+void turnLeft (int i, float s)
+{
+  rotate (_curMatrix, LOCATIONZ, 22.5f);
+  load3DMatrix (_curMatrix);
+  translate (_curMatrix, 0, /*(_iterations - i) * 1.25 **/ s / 3, 0);
+  load3DMatrix (_curMatrix);
+}
+
+void turnRight (float s)
+{
+  rotate (_curMatrix, LOCATIONZ, -22.5f);
+  load3DMatrix (_curMatrix);
+  translate (_curMatrix, 0, s * 2 / 3, 0);
+  load3DMatrix (_curMatrix);
+}
+
+void push ()
+{
+  float* temp = new float[16];
+  cout << "push\n" << print(MATRIX, _curMatrix) << endl;
+  copy (MATRIX, _curMatrix, temp);
+  _matrixStack.push (temp);
+}
+
+void pop ()
+{
+   
+  float* temp = _matrixStack.top();
+  copy (MATRIX, temp, _curMatrix);
+  load3DMatrix (_curMatrix);
+  cout << "pop\n" << print(MATRIX, _curMatrix) << endl;
+  _matrixStack.pop ();
+  
+  delete temp;
+}
+
+
+void rotateCamera(double deg, int axis)
+{
+
+ 
+                  
+	if (axis == X_AXIS) {
+		rotate (_cameraMulti, ORIGINX, deg);
+	} else if (axis == Y_AXIS) {
+		rotate (_cameraMulti, ORIGINY, deg);
+	} else if (axis == Z_AXIS) {
+		rotate (_cameraMulti, ORIGINZ, deg);
+	}
+  
+ 
+   cout << "camara\n" << print(MATRIX, _cameraMulti) << endl;
+	
+}
+
+void initialize (void)
+{
+  _curMatrix[0]  = 1.0f;
+  _curMatrix[1]  = 0.0f;
+  _curMatrix[2]  = 0.0f;
+  _curMatrix[3]  = 0.0f;
+  _curMatrix[4]  = 0.0f;
+  _curMatrix[5]  = 1.0f;
+  _curMatrix[6]  = 0.0f;
+  _curMatrix[7]  = 0.0f;
+  _curMatrix[8]  = 0.0f;
+  _curMatrix[9]  = 0.0f;
+  _curMatrix[10] = 1.0f;
+  _curMatrix[11] = 0.0f;
+  _curMatrix[12] = 0.0f;
+  _curMatrix[13] = 0.0f;
+  _curMatrix[14] = 0.0f;
+  _curMatrix[15] = 1.0f;
+  
+  translate(_curMatrix, 0, 0, 0); // rotation still no working. this is proof
+  
+  load3DMatrix (_curMatrix);
+
+  
+  //rotate (_curMatrix, ORIGINX, 45.0f);
+  
+}
+
+void drawPlant (int i, float s)
+{
+  cout << endl << "drawPlant" << endl << endl;
+  //initialize ();
+  float results[MATRIX];
+  multi ( MATRIX, _cameraMulti, _curMatrix, results);
+  _cameraMulti[0]  = 1.0f;
+  _cameraMulti[1]  = 0.0f;
+  _cameraMulti[2]  = 0.0f;
+  _cameraMulti[3]  = 0.0f;
+  _cameraMulti[4]  = 0.0f;
+  _cameraMulti[5]  = 1.0f;
+  _cameraMulti[6]  = 0.0f;
+  _cameraMulti[7]  = 0.0f;
+  _cameraMulti[8]  = 0.0f;
+  _cameraMulti[9]  = 0.0f;
+  _cameraMulti[10] = 1.0f;
+  _cameraMulti[11] = 0.0f;
+  _cameraMulti[12] = 0.0f;
+  _cameraMulti[13] = 0.0f;
+  _cameraMulti[14] = 0.0f;
+  _cameraMulti[15] = 1.0f;
+  copy (MATRIX, results, _curMatrix);
+  
+  
+   cout << "drawplantInitial\n" << _test << endl << print(MATRIX, _curMatrix) << endl;
+  push ();
+  drawLeaf (i, s);
+  pop ();
 }
 
 /* end of drawplant.c */

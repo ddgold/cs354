@@ -1,14 +1,11 @@
-//
-//  Lsystem.cpp
-//  
-//
-//  Created by Doug Goldstein on 10/15/13.
-//
-//
-
 #include "Lsystem.h"
+#include "helper.h"
+#include "drawplant.h"
 
 using namespace std;
+
+
+
 
 
 
@@ -23,7 +20,7 @@ Lsystem::Lsystem (char* rules, char* sequence)
   
   assert (strlen (sequence) >= 0);
   // Must verify all characters in sequence are valid rules
-  for (int i = 0; i < strlen(sequence); ++i)
+  for (unsigned int i = 0; i < strlen(sequence); ++i)
   {
     if (strchr(_rules, sequence[i]) == NULL)
     {
@@ -33,6 +30,10 @@ Lsystem::Lsystem (char* rules, char* sequence)
   }
   _sequence = sequence;
   _curMatrix = new float[MATRIX];
+  _curMatrix[0]  = 1.0f; 
+  _curMatrix[5]  = 1.0f;
+  _curMatrix[10] = 1.0f;
+  _curMatrix[15] = 1.0f;
 }
 
 
@@ -50,21 +51,21 @@ void Lsystem::execute (int i)
   else
   {
     // Loop through each rule in _sequence
-    for (int c = 0; c < strlen(_sequence); ++c)
+    for (unsigned int c = 0; c < strlen(_sequence); ++c)
     {
       switch (_sequence[c])
       {
         case 'A':
-          ruleA();
           break;
           
-        case 'B':
-          ruleB();
+        case 'B':   //rotate 90 counter clockwise 90 around the z axis
+          rotate(ORIGINZ, 90.0f);
           break;
           
-        case 'C':
-          ruleC();
+        case 'F':   // Draw branch
+          drawBranch ();
           break;
+          
         case '[':
           push();
           break;
@@ -84,27 +85,12 @@ void Lsystem::execute (int i)
 }
 
 
-
-// -----
-// Rules
-// -----
-void Lsystem::ruleA ()
+void Lsystem::loadcurMatrix ()
 {
-  cout << "Rule A" << endl;
+  //load3DMatrix (_curMatrix);
   return;
 }
 
-void Lsystem::ruleB ()
-{
-  cout << "Rule B" << endl;
-  return;
-}
-
-void Lsystem::ruleC ()
-{
-  cout << "Rule C" << endl;
-  return;
-}
 
 void Lsystem::push()
 {
@@ -114,6 +100,7 @@ void Lsystem::push()
   _matrixStack.push (temp);
 }
 
+
 void Lsystem::pop()
 {
   cout << "Pop" << endl;
@@ -122,7 +109,6 @@ void Lsystem::pop()
   _matrixStack.pop ();
   delete temp;
 }
-
 
 
 // ---------------
@@ -139,7 +125,7 @@ void Lsystem::translate (float x, float y, float z)
   float results[MATRIX];
   multi (MATRIX, scale, _curMatrix, results);
   copy (MATRIX, results, _curMatrix);
-  //load3DMatrix (_curMatrix);
+  loadcurMatrix ();
   return;
 }
 
@@ -153,7 +139,7 @@ void Lsystem::scale (float x, float y, float z)
   float results[MATRIX];
   multi (MATRIX, scale, _curMatrix, results);
   copy (MATRIX, results, _curMatrix);
-  //load3DMatrix (_curMatrix);
+  loadcurMatrix ();
   return;
 }
 
@@ -170,7 +156,7 @@ void Lsystem::rotate (Rotation r, float angle)
                               0.0f, 0.0f, 1.0f, 0.0f,
                               0.0f, 0.0f, 0.0f, 1.0f};
     copy (MATRIX, identity, _curMatrix);
-    //load3DMatrix (_curMatrix);
+    loadcurMatrix ();
     
     rotate ((Rotation)(r - 1), angle);
     
@@ -181,7 +167,7 @@ void Lsystem::rotate (Rotation r, float angle)
     float results[MATRIX];
     multi (MATRIX, after, before, results);
     copy (MATRIX, results, _curMatrix);
-    //load3DMatrix (_curMatrix);
+    loadcurMatrix ();
     return;
   }
   else            // Rotate at location
@@ -216,104 +202,8 @@ void Lsystem::rotate (Rotation r, float angle)
     float results[MATRIX];
     multi (MATRIX, rotate, _curMatrix, results);
     copy (MATRIX, results, _curMatrix);
-    //load3DMatrix(_curMatrix);
-    return;
-  }
-  
-}
-
-
-
-// ----------------
-// Matrix Functions
-// ----------------
-
-void Lsystem::copy (Type t, const float* from, float* to)
-{
-  assert (t == VECTOR || t == MATRIX);
-  for (int i = 0; i < t; ++i)
-  {
-    to[i] = from[i];
-  }
-  return;
-}
-
-void Lsystem::multi (Type t, const float* lhs, const float* rhs, float* results)
-{
-  assert (t == VECTOR || t == MATRIX);
-  clear (t, results);
-  
-  if (t == V) // VECTOR
-  {
-    for (int a = 0; a < VECTOR; ++a)
-    {
-      for (int b = 0; b < VECTOR; ++b)
-      {
-        results[a] += lhs[(a * VECTOR) + b] * rhs[b];
-      }
-    }
-    return;
-  }
-  else        // MATRIX
-  {
-    for (int a = 0; a < VECTOR; ++a)
-    {
-      for (int b = 0; b < VECTOR; ++b)
-      {
-        for (int c = 0; c < VECTOR; ++c)
-        {
-          results[(a * VECTOR) + b] += lhs[(a * VECTOR) + c] * rhs[(c * VECTOR) + b];
-        }
-      }
-    }
+    loadcurMatrix ();
     return;
   }
 }
 
-void Lsystem::clear (Type t, float* empty)
-{
-  assert (t == VECTOR || t == MATRIX);
-  for (int i = 0; i < t; ++i)
-  {
-    empty[i] = 0.0f;
-  }
-  return;
-}
-
-int Lsystem::equal (Type t, const float* lhs, const float* rhs)
-{
-  assert (t == VECTOR || t == MATRIX);
-  for (int i = 0; i < t; ++i)
-  {
-    if (lhs[i] != rhs[i])
-    {
-      return i;
-    }
-  }
-  return -1;
-}
-
-string Lsystem::print (Type t, const float* output)
-{
-  assert (t == VECTOR || t == MATRIX);
-  stringstream ss;
-  if (t == V) // VECTOR
-  {
-    for (int i = 0; i < VECTOR; ++i)
-    {
-      ss << output[i] << endl;
-    }
-  }
-  else        // MATRIX
-  {
-    for (int i = 0; i < VECTOR; ++i)
-    {
-      for (int j = 0; j < VECTOR - 1; ++j)
-      {
-        ss << output[(i * VECTOR) + j] << " ";
-      }
-      ss << output[(i * VECTOR) + VECTOR - 1] << endl;
-    }
-  }
-  return ss.str();
-}
