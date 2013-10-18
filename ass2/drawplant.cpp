@@ -73,7 +73,14 @@ void drawLeaf (int i, float s)
 {
   if (i == 0)
   {   
-    drawActualLeaf ();
+    //drawActualLeaf ();
+          push();
+          float results[MATRIX];
+          multi ( MATRIX, _cameraMulti, _curMatrix, results);
+          copy (MATRIX, results, _curMatrix);
+          load3DMatrix (_curMatrix);
+    drawActualFruit ();
+          pop();
   }
   else
   {
@@ -82,10 +89,12 @@ void drawLeaf (int i, float s)
     turnLeft (i -1, s);
     drawLeaf (i - 1, s);
     pop ();
+    
     push ();
     turnRight (s);
     drawLeaf (i - 1, s);
     pop ();
+    
   }
 
 }
@@ -93,10 +102,11 @@ void drawLeaf (int i, float s)
 
 void drawActualLeaf (void)
 {
-  /*
-  cout << "leaf\n" << print(MATRIX, _curMatrix) << endl;
+  
+  //cout << "leaf\n" << print(MATRIX, _curMatrix) << endl;
   load3DMatrix (_curMatrix);
-  glColor3f(0.1,0.9,0.1); 
+  glColor3f(0.1, _randArray[_counter%100] ,0.1); 
+  _counter++;
 	glBegin(GL_POLYGON);
 	glVertex2f(0.0,0.0);
 	glVertex2f(1.0,0.7);
@@ -107,8 +117,8 @@ void drawActualLeaf (void)
 	glVertex2f(-1.3,1.8);
 	glVertex2f(-1.0,0.7);
 	glEnd();
-	*/
 	
+	/*
   GLfloat vertices[] = {
       -0.5f,  0.0f, 0.0f,
        1.0f,  0.0f, 0.0f,     
@@ -146,13 +156,58 @@ void drawActualLeaf (void)
 	}
 	
 	glEnd();
+  */
 }
 
 void drawBranch (int i, float s)
 {
   if (i == 0)
   {
+  
+          push();
+          float results[MATRIX];
+          multi ( MATRIX, _cameraMulti, _curMatrix, results);
+          copy (MATRIX, results, _curMatrix);
+          load3DMatrix (_curMatrix);
     drawActualBranch (s);
+          pop();
+    push();
+          float results2[MATRIX];
+          if(_iterations > 1)
+          {
+            float results2[MATRIX];
+            int alt = -1;
+            multi ( MATRIX, _cameraMulti, _curMatrix, results2);
+            copy (MATRIX, results2, _curMatrix);
+            for(int q = 0; q < 5; q++)
+            {
+               float results3[MATRIX];
+               alt *= -1;
+               push();
+               translate (_curMatrix, 0, s * 1.1 * _randArray[_counter%100], 0);
+               _counter++; 
+               rotate (_curMatrix, LOCATIONY, 180.0f * _randArray[_counter%100]);
+               _counter++;
+               rotate (_curMatrix, LOCATIONZ, alt * 30.0f * (_randArray[_counter%100] - 0.4));
+               _counter++;
+              
+               multi ( MATRIX, _cameraMulti, _curMatrix, results3);
+               copy (MATRIX, results3, _curMatrix);
+               
+               drawActualLeaf ();
+               pop();
+                            
+            }
+          }
+          else
+          {
+              multi ( MATRIX, _cameraMulti, _curMatrix, results2);
+              copy (MATRIX, results2, _curMatrix);
+              translate (_curMatrix, 0, s, 0);
+              drawActualLeaf ();
+          }
+          
+    pop ();
   }
   else
   {
@@ -162,19 +217,19 @@ void drawBranch (int i, float s)
 
 void drawActualBranch (float s)
 {
-	cout << "branch\n" << print(MATRIX, _curMatrix) << endl;
+	//cout << "branch\n" << print(MATRIX, _curMatrix) << endl;
   
   glColor3f(0.54,0.27,0.07); 
 	
 	
-	GLfloat vertices[] = {0.5,  0.0, 0.0,
-                        0.5,  s,   0.0,
-	                      -0.5, s,   0.0,
-	                      -0.5, 0.0, 0.0,
-	                      0.5,  0.0, 0.5,
-                        0.5,  s,   0.5,
-	                      -0.5, s,   0.5,
-	                      -0.5, 0.0, 0.5};
+	GLfloat vertices[] = {0.02 * s, 0.0, 0.0,
+                        0.02 * s, s,   0.0,
+	                     -0.02 * s, s,   0.0,
+	                     -0.02 * s, 0.0, 0.0,
+	                      0.02 * s, 0.0, 0.5,
+                        0.02 * s, s,   0.5,
+	                     -0.02 * s, s,   0.5,
+	                     -0.02 * s, 0.0, 0.5};
 	                      
 	GLfloat indices[] =  {0, 1, 2, 3,
 	                      4, 5, 1, 0,
@@ -219,17 +274,32 @@ void drawActualBranch (float s)
 	*/
 }
 
+void drawActualFruit (void)
+{
+  glColor3f(_randArray[_counter%100] + 0.05, 0.0f, 0.0f);
+  _counter++;
+  glutSolidSphere(1.0, 30, 30);
+}
+
 void turnLeft (int i, float s)
 {
-  rotate (_curMatrix, LOCATIONZ, 22.5f);
+  rotate (_curMatrix, LOCATIONZ, 35.0f * _randArray[_counter%100]);
   load3DMatrix (_curMatrix);
-  translate (_curMatrix, 0, /*(_iterations - i) * 1.25 **/ s / 3, 0);
+  _counter++;
+  rotate (_curMatrix, LOCATIONY, 90.0f * _randArray[_counter%100]);
+  _counter++;
+  load3DMatrix (_curMatrix);
+  translate (_curMatrix, 0, s / 3, 0);  /* * pow(1.25f, i)*/
   load3DMatrix (_curMatrix);
 }
 
 void turnRight (float s)
 {
-  rotate (_curMatrix, LOCATIONZ, -22.5f);
+  rotate (_curMatrix, LOCATIONZ, -35.0f  * _randArray[_counter%100]);
+  _counter++;
+  load3DMatrix (_curMatrix);
+   rotate (_curMatrix, LOCATIONY, 90.0f * _randArray[_counter%100]);
+  _counter++;
   load3DMatrix (_curMatrix);
   translate (_curMatrix, 0, s * 2 / 3, 0);
   load3DMatrix (_curMatrix);
@@ -238,7 +308,7 @@ void turnRight (float s)
 void push ()
 {
   float* temp = new float[16];
-  cout << "push\n" << print(MATRIX, _curMatrix) << endl;
+ //cout << "push\n" << print(MATRIX, _curMatrix) << endl;
   copy (MATRIX, _curMatrix, temp);
   _matrixStack.push (temp);
 }
@@ -249,7 +319,7 @@ void pop ()
   float* temp = _matrixStack.top();
   copy (MATRIX, temp, _curMatrix);
   load3DMatrix (_curMatrix);
-  cout << "pop\n" << print(MATRIX, _curMatrix) << endl;
+  //cout << "pop\n" << print(MATRIX, _curMatrix) << endl;
   _matrixStack.pop ();
   
   delete temp;
@@ -259,9 +329,7 @@ void pop ()
 void rotateCamera(double deg, int axis)
 {
 
- 
-                  
-	if (axis == X_AXIS) {
+  if (axis == X_AXIS) {
 		rotate (_cameraMulti, ORIGINX, deg);
 	} else if (axis == Y_AXIS) {
 		rotate (_cameraMulti, ORIGINY, deg);
@@ -269,9 +337,32 @@ void rotateCamera(double deg, int axis)
 		rotate (_cameraMulti, ORIGINZ, deg);
 	}
   
- 
    cout << "camara\n" << print(MATRIX, _cameraMulti) << endl;
+
+ /*
+                  
+	if (axis == X_AXIS) {
+		rotate (_curMatrix, ORIGINX, deg);
+	} else if (axis == Y_AXIS) {
+		rotate (_curMatrix, ORIGINY, deg);
+	} else if (axis == Z_AXIS) {
+		rotate (_curMatrix, ORIGINZ, deg);
+	}
+  
+   cout << "camara\n" << print(MATRIX, _curMatrix) << endl;
+   
+   */
 	
+}
+
+void fillRandom()
+{
+  for(int i = 0; i < 100; i++)
+  {
+    _randArray[i] = (float)(rand() % 10)/30 + .5;
+    cout << _randArray[i] << endl;
+  }
+  //assert(0);
 }
 
 void initialize (void)
@@ -305,32 +396,23 @@ void initialize (void)
 void drawPlant (int i, float s)
 {
   cout << endl << "drawPlant" << endl << endl;
+  _counter = 0;
+  _iterations = i;
   //initialize ();
+  /*
   float results[MATRIX];
   multi ( MATRIX, _cameraMulti, _curMatrix, results);
-  _cameraMulti[0]  = 1.0f;
-  _cameraMulti[1]  = 0.0f;
-  _cameraMulti[2]  = 0.0f;
-  _cameraMulti[3]  = 0.0f;
-  _cameraMulti[4]  = 0.0f;
-  _cameraMulti[5]  = 1.0f;
-  _cameraMulti[6]  = 0.0f;
-  _cameraMulti[7]  = 0.0f;
-  _cameraMulti[8]  = 0.0f;
-  _cameraMulti[9]  = 0.0f;
-  _cameraMulti[10] = 1.0f;
-  _cameraMulti[11] = 0.0f;
-  _cameraMulti[12] = 0.0f;
-  _cameraMulti[13] = 0.0f;
-  _cameraMulti[14] = 0.0f;
-  _cameraMulti[15] = 1.0f;
   copy (MATRIX, results, _curMatrix);
+  */
   
-  
-   cout << "drawplantInitial\n" << _test << endl << print(MATRIX, _curMatrix) << endl;
+  //cout << "drawplantInitial\n" << _counter << endl << print(MATRIX, _curMatrix) << endl;
   push ();
   drawLeaf (i, s);
   pop ();
+  /*load2DMatrix(.7 , -.5, 0.0,
+               0.5,  .7, 0.0,
+               0.0, 0.0, 1.0);
+               */
 }
 
 /* end of drawplant.c */

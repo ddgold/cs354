@@ -23,6 +23,8 @@ void drawBranch (int, float);
 
 void drawActualBranch (float);
 
+void drawActualFruit (void);
+
 void push (void);
 
 void pop (void);
@@ -38,6 +40,7 @@ void rotateCamera(double, int);
 #define Y_AXIS			1
 #define Z_AXIS			2
 
+void fillRandom(void);
 
 void initialize (void);
 

@@ -89,6 +89,7 @@ int endCanvas(int status) {
 
 
 int main (int argc, char** argv) {
+  fillRandom();
   glutInit(&argc,argv);
   glutInitWindowSize(W, H);
   glutInitWindowPosition(X_OFF, Y_OFF);
@@ -106,9 +107,8 @@ void init() {
   glClearColor(0.0, 0.0, 0.0, 0.0);  
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(-40.0, 40.0, -10.0, 70.0, -10.0, 10.0);
+  glOrtho(-40.0, 40.0, -10.0, 70.0, -50.0, 50.0);
 }
-
 
 void display() {
 	glEnable(GL_DEPTH_TEST);

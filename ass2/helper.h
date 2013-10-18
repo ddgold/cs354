@@ -37,11 +37,13 @@ enum Rotation
   ORIGINZ
 };
 
+static float _randArray[100];
+
 static float _curMatrix[MATRIX] = {1.0f, 0.0f, 0.0f, 0.0f,
                                    0.0f, 1.0f, 0.0f, 0.0f,
                                    0.0f, 0.0f, 1.0f, 0.0f,
                                    0.0f, 0.0f, 0.0f, 1.0f};
-                                   
+                                  
 static float _cameraMulti[] = {1.0f, 0.0f, 0.0f, 0.0f,
                               0.0f, 1.0f, 0.0f, 0.0f,
                               0.0f, 0.0f, 1.0f, 0.0f,
@@ -49,7 +51,7 @@ static float _cameraMulti[] = {1.0f, 0.0f, 0.0f, 0.0f,
 
 static stack<float*> _matrixStack;
 
-static int _test = 1;
+static int _counter = 1;
 
 static int _iterations = 1;
 
