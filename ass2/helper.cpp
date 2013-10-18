@@ -14,7 +14,7 @@ void translate (float* input, float x, float y, float z)
   
   float results[MATRIX];
   
-  cout << "translate\n" << print (MATRIX, translate) << endl;
+  //cout << "translate\n" << print (MATRIX, translate) << endl;
   
   multi (MATRIX, translate, input, results);
   copy (MATRIX, results, input);
@@ -62,7 +62,7 @@ void rotate (float* input, Rotation r, float angle)
     multi (MATRIX, translate, before, input);
     
     return;
-    */
+    */  
    
     float before[MATRIX];
     copy (MATRIX, input, before);
@@ -83,7 +83,7 @@ void rotate (float* input, Rotation r, float angle)
     float results[MATRIX];
     multi (MATRIX, after, before,  results);
     copy (MATRIX, results, input);
-  
+
     return;
   }
   else            // Rotate at location
@@ -116,7 +116,7 @@ void rotate (float* input, Rotation r, float angle)
     }
     
     float results[MATRIX];
-    cout << "rotate\n" << print (MATRIX, rotate) << endl;
+    //cout << "rotate\n" << print (MATRIX, rotate) << endl;
     multi (MATRIX, rotate, input, results);
     copy (MATRIX, results, input);
     return;
