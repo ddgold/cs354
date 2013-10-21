@@ -86,13 +86,33 @@ void drawLeaf (int i, float s)
   {
     drawBranch (i - 1, s);
     push ();
-    turnLeft (i -1, s);
-    drawLeaf (i - 1, s);
+    if( _randArray[_counter%100] < 0.75  )
+      {
+        _counter++;
+       turnLeft (i -1, s);
+       drawLeaf (i - 1, s);
+      }
+    else if(i < _iterations)
+      {
+        _counter++;
+        drawLeaf (0, s);
+      }
+    
     pop ();
     
     push ();
-    turnRight (s);
-    drawLeaf (i - 1, s);
+     if( _randArray[_counter%100] <0.75 )
+      {
+        _counter++;
+        turnRight (s);
+        drawLeaf (i - 1, s);
+      }
+    else if(i < _iterations)
+      {
+        _counter++;
+        drawLeaf (0, s);
+      }
+    //drawLeaf (i - 1, s);
     pop ();
     
   }
@@ -107,17 +127,80 @@ void drawActualLeaf (void)
   load3DMatrix (_curMatrix);
   glColor3f(0.1, _randArray[_counter%100] ,0.1); 
   _counter++;
-	glBegin(GL_POLYGON);
-	glVertex2f(0.0,0.0);
-	glVertex2f(1.0,0.7);
-	glVertex2f(1.3,1.8);
-	glVertex2f(1.0,2.8);
-	glVertex2f(0.0,4.0);
-	glVertex2f(-1.0,2.8);
-	glVertex2f(-1.3,1.8);
-	glVertex2f(-1.0,0.7);
-	glEnd();
-	
+
+  GLfloat vertices[] = {
+       0.0, 0.0, 0.0,
+       1.0, 0.7, 0.0,
+       1.3, 1.8, 0.0,
+       1.0, 2.8, 0.0,
+       0.0, 4.0, 0.0,
+      -1.0, 2.8, 0.0,
+      -1.3, 1.8, 0.0,
+      -1.0, 0.7, 0.0,
+
+       0.0, 0.0, 0.3,
+       1.0, 0.7, 0.3,
+       1.3, 1.8, 0.3,
+       1.0, 2.8, 0.3,
+       0.0, 4.0, 0.3,
+      -1.0, 2.8, 0.3,
+      -1.3, 1.8, 0.3,
+      -1.0, 0.7, 0.3};
+
+  GLfloat indices[] = {
+      0, 1, 2 , 3 , 4 , 5 , 6 , 7 ,
+      8, 9, 10, 11, 12, 13, 14, 15,
+      0, 1, 9 , 8 ,
+      1, 2, 10, 9 , 
+      2, 3, 11, 10,
+      3, 4, 12, 11,
+      4, 5, 13, 12,
+      5, 6, 14, 13,
+      6, 7, 15, 14,
+      7, 0, 8 , 15};
+  
+
+int i, index1, index2, index3, index4, index5, index6, index7, index8;
+
+  for ( i = 0; i < 16; i+=8)
+  { 
+    index1 = indices[i] * 3;
+    index2 = indices[i+1] * 3;
+    index3 = indices[i+2] * 3;
+    index4 = indices[i+3] * 3;
+    index5 = indices[i+4] * 3;
+    index6 = indices[i+5] * 3;
+    index7 = indices[i+6] * 3;
+    index8 = indices[i+7] * 3;
+     glBegin(GL_POLYGON);
+     glVertex3fv( &(vertices[index1]) );
+    glVertex3fv( &(vertices[index2]) );
+    glVertex3fv( &(vertices[index3]) );
+    glVertex3fv( &(vertices[index4]) );
+    glVertex3fv( &(vertices[index5]) );
+    glVertex3fv( &(vertices[index6]) );
+    glVertex3fv( &(vertices[index7]) );
+    glVertex3fv( &(vertices[index8]) );
+     glEnd();
+  }
+  
+  for (i = 16; i < 48; i+=4)
+  { 
+    index1 = indices[i] * 3;
+    index2 = indices[i+1] * 3;
+    index3 = indices[i+2] * 3;
+    index4 = indices[i+3] * 3;
+
+    glBegin(GL_QUADS);
+
+    glVertex3fv( &(vertices[index1]) );
+    glVertex3fv( &(vertices[index2]) );
+    glVertex3fv( &(vertices[index3]) );
+    glVertex3fv( &(vertices[index4]) );
+
+    glEnd();
+  }
+  
 	/*
   GLfloat vertices[] = {
       -0.5f,  0.0f, 0.0f,
@@ -186,7 +269,7 @@ void drawBranch (int i, float s)
                push();
                translate (_curMatrix, 0, s * 1.1 * _randArray[_counter%100], 0);
                _counter++; 
-               rotate (_curMatrix, LOCATIONY, 180.0f * _randArray[_counter%100]);
+               rotate (_curMatrix, LOCATIONY, alt * 180.0f * _randArray[_counter%100]);
                _counter++;
                rotate (_curMatrix, LOCATIONZ, alt * 30.0f * (_randArray[_counter%100] - 0.4));
                _counter++;
@@ -218,10 +301,81 @@ void drawBranch (int i, float s)
 void drawActualBranch (float s)
 {
 	//cout << "branch\n" << print(MATRIX, _curMatrix) << endl;
+  glColor3f(_randArray[_counter%100] , _randArray[(_counter+1)%100]/2 ,0.07); 
+  _counter+=2;
+  //glColor3f(0.54,0.27,0.07); 
+	
+	GLfloat vertices[] = {0.02 * s * sin(0*M_PI/180)  , 0.0, 0.02 * s * cos(0*M_PI/180),
+                        0.02 * s * sin(45*M_PI/180) , 0.0, 0.02 * s * cos(45*M_PI/180),
+                        0.02 * s * sin(90*M_PI/180) , 0.0, 0.02 * s * cos(90*M_PI/180),
+                        0.02 * s * sin(135*M_PI/180), 0.0, 0.02 * s * cos(135*M_PI/180),
+                        0.02 * s * sin(180*M_PI/180), 0.0, 0.02 * s * cos(180*M_PI/180),
+                        0.02 * s * sin(225*M_PI/180), 0.0, 0.02 * s * cos(215*M_PI/180),
+                        0.02 * s * sin(270*M_PI/180), 0.0, 0.02 * s * cos(270*M_PI/180),
+                        0.02 * s * sin(315*M_PI/180), 0.0, 0.02 * s * cos(315*M_PI/180),
+
+                        0.02 * s * sin(0*M_PI/180)  , s  , 0.02 * s * cos(0*M_PI/180),
+                        0.02 * s * sin(45*M_PI/180) , s  , 0.02 * s * cos(45*M_PI/180),
+                        0.02 * s * sin(90*M_PI/180) , s  , 0.02 * s * cos(90*M_PI/180),
+                        0.02 * s * sin(135*M_PI/180), s  , 0.02 * s * cos(135*M_PI/180),
+                        0.02 * s * sin(180*M_PI/180), s  , 0.02 * s * cos(180*M_PI/180),
+                        0.02 * s * sin(225*M_PI/180), s  , 0.02 * s * cos(215*M_PI/180),
+                        0.02 * s * sin(270*M_PI/180), s  , 0.02 * s * cos(270*M_PI/180),
+                        0.02 * s * sin(315*M_PI/180), s  , 0.02 * s * cos(315*M_PI/180)};
+
+ GLfloat indices[] = {
+      0, 1, 2 , 3 , 4 , 5 , 6 , 7 ,
+      8, 9, 10, 11, 12, 13, 14, 15,
+      0, 1, 9 , 8 ,
+      1, 2, 10, 9 , 
+      2, 3, 11, 10,
+      3, 4, 12, 11,
+      4, 5, 13, 12,
+      5, 6, 14, 13,
+      6, 7, 15, 14,
+      7, 0, 8 , 15};
   
-  glColor3f(0.54,0.27,0.07); 
-	
-	
+int i, index1, index2, index3, index4, index5, index6, index7, index8;
+
+  for ( i = 0; i < 16; i+=8)
+  { 
+    index1 = indices[i] * 3;
+    index2 = indices[i+1] * 3;
+    index3 = indices[i+2] * 3;
+    index4 = indices[i+3] * 3;
+    index5 = indices[i+4] * 3;
+    index6 = indices[i+5] * 3;
+    index7 = indices[i+6] * 3;
+    index8 = indices[i+7] * 3;
+     glBegin(GL_POLYGON);
+     glVertex3fv( &(vertices[index1]) );
+    glVertex3fv( &(vertices[index2]) );
+    glVertex3fv( &(vertices[index3]) );
+    glVertex3fv( &(vertices[index4]) );
+    glVertex3fv( &(vertices[index5]) );
+    glVertex3fv( &(vertices[index6]) );
+    glVertex3fv( &(vertices[index7]) );
+    glVertex3fv( &(vertices[index8]) );
+     glEnd();
+  }
+  
+  for (i = 16; i < 48; i+=4)
+  { 
+    index1 = indices[i] * 3;
+    index2 = indices[i+1] * 3;
+    index3 = indices[i+2] * 3;
+    index4 = indices[i+3] * 3;
+
+    glBegin(GL_QUADS);
+
+    glVertex3fv( &(vertices[index1]) );
+    glVertex3fv( &(vertices[index2]) );
+    glVertex3fv( &(vertices[index3]) );
+    glVertex3fv( &(vertices[index4]) );
+
+    glEnd();
+  }
+  /*
 	GLfloat vertices[] = {0.02 * s, 0.0, 0.0,
                         0.02 * s, s,   0.0,
 	                     -0.02 * s, s,   0.0,
@@ -230,6 +384,7 @@ void drawActualBranch (float s)
                         0.02 * s, s,   0.5,
 	                     -0.02 * s, s,   0.5,
 	                     -0.02 * s, 0.0, 0.5};
+
 	                      
 	GLfloat indices[] =  {0, 1, 2, 3,
 	                      4, 5, 1, 0,
@@ -238,6 +393,7 @@ void drawActualBranch (float s)
 	                      4, 0, 3, 7,
 	                      2, 1, 5, 6};               
 	
+
 	int index1, index2, index3, index4;
 	for (int i = 0; i < 24; i += 4)
 	{
@@ -256,7 +412,7 @@ void drawActualBranch (float s)
 		glEnd();
 	}
   
-  
+  */
   /*
   glColor3f(184.0f/256.0f, 134.0f/256.0f, 11.0f/255.0f);
   
