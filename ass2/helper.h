@@ -37,6 +37,15 @@ enum Rotation
   ORIGINZ
 };
 
+enum Season
+{
+  SUMMER,
+  FALL,
+  WINTER,
+  SPRING
+};
+
+
 static float _randArray[100];
 
 static float _curMatrix[MATRIX] = {1.0f, 0.0f, 0.0f, 0.0f,
@@ -54,6 +63,10 @@ static stack<float*> _matrixStack;
 static int _counter = 1;
 
 static int _iterations = 1;
+
+static double _x_pos;
+
+static Season _season;
 
 // ---------------
 // Transformations
