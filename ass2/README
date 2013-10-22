@@ -6,7 +6,33 @@
  * instructions for compiling, etc., if you used something besides the
  * standard Makefile.
  *
- * Group Members: <FILL IN>
- * Email Addresses:
+ * Group Members: Doug Goldstein
+ * Email Addresses: ddgold@me.com
+ * Group Members: Ryan Brooks
+ * Email Addresses: ryan.brooks92@yahoo.com
+
  */
+
+
+L-System:
+D  - Draw branch or apple
+F  - Move Forward by one third branch length
+T  - Draw leaves
+L0 - Draw tree
++  - Turn Right
+-  - Turn Left
+[  - Push
+]  - Pop
+S  - Scale by half
+
+Axiom: L0
+Ruels:
+1. L0 -> D F [- S L0] F [+ S L0] F T
+
+
+Questions:
+1 & 2) How does the plant change visually when you switch between a perspective projection and an orthographic projection? Why is this?
+
+
+The plant changes when in orthographic where the entire screen view is seen perpendicular form each point on the screen where perspective is viewed from a single point in space.  This causes the perpective view to make leaves and branches closer to the camera seem larger and the backwards facing branches and leaves look smaller.  In orthographic view all leaves, near and far will be of the same size. 
 

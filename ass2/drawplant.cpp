@@ -71,7 +71,7 @@ void load3DMatrix (const float* mView)
 
 void drawLeaf (int i, float s)
 {
-  if (i == 0)
+if (i == 0)
   {   
     //drawActualLeaf ();
           push();
@@ -79,7 +79,8 @@ void drawLeaf (int i, float s)
           multi ( MATRIX, _cameraMulti, _curMatrix, results);
           copy (MATRIX, results, _curMatrix);
           load3DMatrix (_curMatrix);
-    drawActualFruit ();
+          if(_iterations !=1)
+              drawActualFruit ();
           pop();
   }
   else
@@ -98,6 +99,8 @@ void drawLeaf (int i, float s)
         drawLeaf (0, s);
       }
     
+    //turnLeft (i -1, s);
+    //drawLeaf (i - 1, s)
     pop ();
     
     push ();
@@ -110,8 +113,9 @@ void drawLeaf (int i, float s)
     else if(i < _iterations)
       {
         _counter++;
-        drawLeaf (0, s);
+       drawLeaf (0, s);
       }
+    // turnRight (s);
     //drawLeaf (i - 1, s);
     pop ();
     
@@ -123,123 +127,99 @@ void drawLeaf (int i, float s)
 void drawActualLeaf (void)
 {
   
-  //cout << "leaf\n" << print(MATRIX, _curMatrix) << endl;
-  load3DMatrix (_curMatrix);
-  glColor3f(0.1, _randArray[_counter%100] ,0.1); 
+  if(_season != WINTER)
+  {
+     if(_season == SPRING)
+     {
+      glColor3f(0.5, 0.1+ _randArray[_counter%100] ,0.5); 
+     }
+     else if(_season == SUMMER)
+     {
+      glColor3f(0.1, _randArray[_counter%100] ,0.1); 
+     }
+     else
+     {
+      glColor3f(_randArray[_counter%100] ,0.1, 0.1); 
+     }
+    //cout << "leaf\n" << print(MATRIX, _curMatrix) << endl;
+    load3DMatrix (_curMatrix);
+    //glColor3f(0.1, _randArray[_counter%100] ,0.1); 
+    
+
+    GLfloat vertices[] = {
+         0.0, 0.0, 0.0,
+         1.0, 0.7, 0.0,
+         1.3, 1.8, 0.0,
+         1.0, 2.8, 0.0,
+         0.0, 4.0, 0.0,
+        -1.0, 2.8, 0.0,
+        -1.3, 1.8, 0.0,
+        -1.0, 0.7, 0.0,
+
+         0.0, 0.0, 0.3,
+         1.0, 0.7, 0.3,
+         1.3, 1.8, 0.3,
+         1.0, 2.8, 0.3,
+         0.0, 4.0, 0.3,
+        -1.0, 2.8, 0.3,
+        -1.3, 1.8, 0.3,
+        -1.0, 0.7, 0.3};
+
+    GLfloat indices[] = {
+        0, 1, 2 , 3 , 4 , 5 , 6 , 7 ,
+        8, 9, 10, 11, 12, 13, 14, 15,
+        0, 1, 9 , 8 ,
+        1, 2, 10, 9 , 
+        2, 3, 11, 10,
+        3, 4, 12, 11,
+        4, 5, 13, 12,
+        5, 6, 14, 13,
+        6, 7, 15, 14,
+        7, 0, 8 , 15};
+    
+
+  int i, index1, index2, index3, index4, index5, index6, index7, index8;
+
+    for ( i = 0; i < 16; i+=8)
+    { 
+      index1 = indices[i] * 3;
+      index2 = indices[i+1] * 3;
+      index3 = indices[i+2] * 3;
+      index4 = indices[i+3] * 3;
+      index5 = indices[i+4] * 3;
+      index6 = indices[i+5] * 3;
+      index7 = indices[i+6] * 3;
+      index8 = indices[i+7] * 3;
+       glBegin(GL_POLYGON);
+       glVertex3fv( &(vertices[index1]) );
+      glVertex3fv( &(vertices[index2]) );
+      glVertex3fv( &(vertices[index3]) );
+      glVertex3fv( &(vertices[index4]) );
+      glVertex3fv( &(vertices[index5]) );
+      glVertex3fv( &(vertices[index6]) );
+      glVertex3fv( &(vertices[index7]) );
+      glVertex3fv( &(vertices[index8]) );
+       glEnd();
+    }
+    
+    for (i = 16; i < 48; i+=4)
+    { 
+      index1 = indices[i] * 3;
+      index2 = indices[i+1] * 3;
+      index3 = indices[i+2] * 3;
+      index4 = indices[i+3] * 3;
+
+      glBegin(GL_QUADS);
+
+      glVertex3fv( &(vertices[index1]) );
+      glVertex3fv( &(vertices[index2]) );
+      glVertex3fv( &(vertices[index3]) );
+      glVertex3fv( &(vertices[index4]) );
+
+      glEnd();
+    }
+  }
   _counter++;
-
-  GLfloat vertices[] = {
-       0.0, 0.0, 0.0,
-       1.0, 0.7, 0.0,
-       1.3, 1.8, 0.0,
-       1.0, 2.8, 0.0,
-       0.0, 4.0, 0.0,
-      -1.0, 2.8, 0.0,
-      -1.3, 1.8, 0.0,
-      -1.0, 0.7, 0.0,
-
-       0.0, 0.0, 0.3,
-       1.0, 0.7, 0.3,
-       1.3, 1.8, 0.3,
-       1.0, 2.8, 0.3,
-       0.0, 4.0, 0.3,
-      -1.0, 2.8, 0.3,
-      -1.3, 1.8, 0.3,
-      -1.0, 0.7, 0.3};
-
-  GLfloat indices[] = {
-      0, 1, 2 , 3 , 4 , 5 , 6 , 7 ,
-      8, 9, 10, 11, 12, 13, 14, 15,
-      0, 1, 9 , 8 ,
-      1, 2, 10, 9 , 
-      2, 3, 11, 10,
-      3, 4, 12, 11,
-      4, 5, 13, 12,
-      5, 6, 14, 13,
-      6, 7, 15, 14,
-      7, 0, 8 , 15};
-  
-
-int i, index1, index2, index3, index4, index5, index6, index7, index8;
-
-  for ( i = 0; i < 16; i+=8)
-  { 
-    index1 = indices[i] * 3;
-    index2 = indices[i+1] * 3;
-    index3 = indices[i+2] * 3;
-    index4 = indices[i+3] * 3;
-    index5 = indices[i+4] * 3;
-    index6 = indices[i+5] * 3;
-    index7 = indices[i+6] * 3;
-    index8 = indices[i+7] * 3;
-     glBegin(GL_POLYGON);
-     glVertex3fv( &(vertices[index1]) );
-    glVertex3fv( &(vertices[index2]) );
-    glVertex3fv( &(vertices[index3]) );
-    glVertex3fv( &(vertices[index4]) );
-    glVertex3fv( &(vertices[index5]) );
-    glVertex3fv( &(vertices[index6]) );
-    glVertex3fv( &(vertices[index7]) );
-    glVertex3fv( &(vertices[index8]) );
-     glEnd();
-  }
-  
-  for (i = 16; i < 48; i+=4)
-  { 
-    index1 = indices[i] * 3;
-    index2 = indices[i+1] * 3;
-    index3 = indices[i+2] * 3;
-    index4 = indices[i+3] * 3;
-
-    glBegin(GL_QUADS);
-
-    glVertex3fv( &(vertices[index1]) );
-    glVertex3fv( &(vertices[index2]) );
-    glVertex3fv( &(vertices[index3]) );
-    glVertex3fv( &(vertices[index4]) );
-
-    glEnd();
-  }
-  
-	/*
-  GLfloat vertices[] = {
-      -0.5f,  0.0f, 0.0f,
-       1.0f,  0.0f, 0.0f,     
-       9.0f, -1.0f, 1.0f, 
-       8.0f,  2.0f, 0.0f, 
-      16.0f,  8.0f, 1.0f, 
-      13.0f,  9.0f, 0.0f, 
-      15.0f, 14.0f, -1.0f, 
-      10.0f, 13.0f, 0.0f, 
-       9.0f, 15.0f, 1.0f, 
-       5.0f, 12.0f, 0.0f, 
-       7.0f, 20.0f, 1.0f, 
-       4.0f, 19.0f, 0.0f, 
-       0.0f, 25.0f, -1.0f, 
-      -4.0f, 19.0f, 0.0f, 
-      -7.0f, 20.0f, 1.0f, 
-      -5.0f, 12.0f, 0.0f, 
-      -9.0f, 15.0f, 1.0f, 
-     -10.0f, 13.0f, 0.0f, 
-     -15.0f, 14.0f, -1.0f, 
-     -13.0f,  9.0f, 0.0f, 
-     -16.0f,  8.0f, 1.0f, 
-      -8.0f,  2.0f, 0.0f, 
-      -9.0f, -1.0f, 0.0f, 
-      -1.0f,  0.0f, 0.0f};
-	
-	
-  //glColor3f(0.1,0.9,0.1); 
-  glBegin(GL_POLYGON);
-	
-	for (int i = 0; i < 75; i+=3)
-	{
-    glColor3f((GLfloat)(rand() % 10)/10 + .1, 0, 0);
-	  glVertex3f(vertices[i]/8, vertices[i+1]/8, vertices[i+2]/8);
-	}
-	
-	glEnd();
-  */
 }
 
 void drawBranch (int i, float s)
@@ -375,66 +355,21 @@ int i, index1, index2, index3, index4, index5, index6, index7, index8;
 
     glEnd();
   }
-  /*
-	GLfloat vertices[] = {0.02 * s, 0.0, 0.0,
-                        0.02 * s, s,   0.0,
-	                     -0.02 * s, s,   0.0,
-	                     -0.02 * s, 0.0, 0.0,
-	                      0.02 * s, 0.0, 0.5,
-                        0.02 * s, s,   0.5,
-	                     -0.02 * s, s,   0.5,
-	                     -0.02 * s, 0.0, 0.5};
-
-	                      
-	GLfloat indices[] =  {0, 1, 2, 3,
-	                      4, 5, 1, 0,
-	                      7, 6, 5, 4,
-	                      3, 2, 6, 7,
-	                      4, 0, 3, 7,
-	                      2, 1, 5, 6};               
-	
-
-	int index1, index2, index3, index4;
-	for (int i = 0; i < 24; i += 4)
-	{
-		index1 = indices[i] * 3;
-		index2 = indices[i+1] * 3;
-		index3 = indices[i+2] * 3;
-    index4 = indices[i+3] * 3;
-
-		glBegin(GL_QUADS);
-
-		glVertex3fv( &(vertices[index1]) );
-		glVertex3fv( &(vertices[index2]) );
-		glVertex3fv( &(vertices[index3]) );
-		glVertex3fv( &(vertices[index4]) );
-
-		glEnd();
-	}
-  
-  */
-  /*
-  glColor3f(184.0f/256.0f, 134.0f/256.0f, 11.0f/255.0f);
-  
-  //glBegin(GL_POLYGON);
-  
-	GLUquadric* qobj;
-	qobj = gluNewQuadric();
-	
-	gluQuadricNormals(qobj, GLU_SMOOTH);
-	float base_diameter;
-	float length;
-	length = _length;
-  base_diameter	= sqrt(_length);
-	gluCylinder(qobj, s/8, s/9, s, 16, 16);
-	*/
 }
 
 void drawActualFruit (void)
 {
-  glColor3f(_randArray[_counter%100] + 0.05, 0.0f, 0.0f);
+  if(_season == SUMMER)
+  {
+    glColor3f(_randArray[_counter%100] + 0.05, 0.0f, 0.0f);
+    glutSolidSphere(1.0, 30, 30); 
+  }
+  else if(_season == SPRING)
+  {
+    glColor3f(_randArray[_counter%100] - 0.1, 1.0, 0.0f);
+    glutSolidSphere(0.6, 30, 30); 
+  }
   _counter++;
-  glutSolidSphere(1.0, 30, 30);
 }
 
 void turnLeft (int i, float s)
@@ -492,83 +427,30 @@ void rotateCamera(double deg, int axis)
 	} else if (axis == Z_AXIS) {
 		rotate (_cameraMulti, ORIGINZ, deg);
 	}
-  
-   cout << "camara\n" << print(MATRIX, _cameraMulti) << endl;
+}
 
- /*
-                  
-	if (axis == X_AXIS) {
-		rotate (_curMatrix, ORIGINX, deg);
-	} else if (axis == Y_AXIS) {
-		rotate (_curMatrix, ORIGINY, deg);
-	} else if (axis == Z_AXIS) {
-		rotate (_curMatrix, ORIGINZ, deg);
-	}
-  
-   cout << "camara\n" << print(MATRIX, _curMatrix) << endl;
-   
-   */
-	
+void setSeason()
+{
+  _season = (Season)((_season+1)%4);
 }
 
 void fillRandom()
 {
+  srand (time(NULL));
   for(int i = 0; i < 100; i++)
   {
     _randArray[i] = (float)(rand() % 10)/30 + .5;
-    cout << _randArray[i] << endl;
   }
   //assert(0);
 }
 
-void initialize (void)
-{
-  _curMatrix[0]  = 1.0f;
-  _curMatrix[1]  = 0.0f;
-  _curMatrix[2]  = 0.0f;
-  _curMatrix[3]  = 0.0f;
-  _curMatrix[4]  = 0.0f;
-  _curMatrix[5]  = 1.0f;
-  _curMatrix[6]  = 0.0f;
-  _curMatrix[7]  = 0.0f;
-  _curMatrix[8]  = 0.0f;
-  _curMatrix[9]  = 0.0f;
-  _curMatrix[10] = 1.0f;
-  _curMatrix[11] = 0.0f;
-  _curMatrix[12] = 0.0f;
-  _curMatrix[13] = 0.0f;
-  _curMatrix[14] = 0.0f;
-  _curMatrix[15] = 1.0f;
-  
-  translate(_curMatrix, 0, 0, 0); // rotation still no working. this is proof
-  
-  load3DMatrix (_curMatrix);
-
-  
-  //rotate (_curMatrix, ORIGINX, 45.0f);
-  
-}
-
 void drawPlant (int i, float s)
 {
-  cout << endl << "drawPlant" << endl << endl;
   _counter = 0;
   _iterations = i;
-  //initialize ();
-  /*
-  float results[MATRIX];
-  multi ( MATRIX, _cameraMulti, _curMatrix, results);
-  copy (MATRIX, results, _curMatrix);
-  */
-  
-  //cout << "drawplantInitial\n" << _counter << endl << print(MATRIX, _curMatrix) << endl;
   push ();
   drawLeaf (i, s);
   pop ();
-  /*load2DMatrix(.7 , -.5, 0.0,
-               0.5,  .7, 0.0,
-               0.0, 0.0, 1.0);
-               */
 }
 
 /* end of drawplant.c */

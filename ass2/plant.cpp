@@ -20,6 +20,7 @@
 #include "helper.h"
 #include "common.h"
 #include "drawplant.h"
+#include "readppm.h"
 
 
 /* GLOBAL VARAIBLES */
@@ -33,7 +34,7 @@ int Y_OFF = 10;	/* window y offset */
 void display(void);
 void init(void);
 int endCanvas(int);
-
+void mouseTrack(int);
 
 void myKeyHandler(unsigned char ch, int x, int y)
 {
@@ -69,12 +70,36 @@ void myKeyHandler(unsigned char ch, int x, int y)
     
       break;
     
+    case 'w':
+      setSeason();
+      break;
+
     default:
       return;
       break;
   }
   
   display ();
+}
+
+void mouseTrack(int x, int y)
+{
+  
+  double x_change = x - _x_pos;
+  _x_pos = (double)x;
+  
+  cout << "entered mouseTrack " << x_change << endl;
+  if(x_change > 0 && _counter%3 ==0) //mouse moved right - counter clockwise
+  {
+    rotateCamera(x_change/2,Y_AXIS);
+  }
+  else if(x_change < 0 && _counter%3 ==0) //mouse moved left - clockwise
+  {
+    rotateCamera(x_change/2,Y_AXIS);
+  }
+  _counter++;
+   display ();
+
 }
 
 int endCanvas(int status) {
@@ -84,11 +109,8 @@ int endCanvas(int status) {
   exit(status);
 }
 
-
-
-
-
 int main (int argc, char** argv) {
+  _x_pos = 0;
   fillRandom();
   glutInit(&argc,argv);
   glutInitWindowSize(W, H);
@@ -98,7 +120,9 @@ int main (int argc, char** argv) {
   init();
   //glFrustum(-100.0, 100.0, -50.0,50.0,-50.0,50.0  );
   glutDisplayFunc(display);
-	glutKeyboardFunc(myKeyHandler);
+  glutKeyboardFunc(myKeyHandler);
+  glutMotionFunc(mouseTrack);
+
   glutMainLoop();
   return 0;
 }
@@ -111,12 +135,19 @@ void init() {
 }
 
 void display() {
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  
 
-   cout << "display\n" << print(MATRIX, _curMatrix) << endl;
-	/* See drawplant.c for the definition of this routine */
-	drawPlant(_iterations, 10.0f);
+  // Draw Background
+  int pic_w, pic_h;
+  GLubyte* img = readPPMfile ("apple.ppm", &pic_w, &pic_h);
+  glRasterPos3f (-40.0f, -10.0f, -40.0f);
+  glDrawPixels (pic_w, pic_h, GL_RGB, GL_UNSIGNED_BYTE, img);
+  
+
+  /* See drawplant.c for the definition of this routine */
+  drawPlant(_iterations, 10.0f);
 
     glFlush();  /* Flush all executed OpenGL ops finish */
 

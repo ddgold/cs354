@@ -35,14 +35,13 @@ void turnLeft(int, float);
 
 void rotateCamera(double, int);
 
+void setSeason(void);
 
 #define X_AXIS			0
 #define Y_AXIS			1
 #define Z_AXIS			2
 
 void fillRandom(void);
-
-void initialize (void);
 
 void drawPlant (int, float);
 
