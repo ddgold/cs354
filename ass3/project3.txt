@@ -1,17 +1,55 @@
 Project 3 Individual Written Questions 
 
-Name:
-Email Address:
+Name: Doug Goldstein
+Email Address: ddgold@me.com
 
-1.
+1.  Our implementation uses three arrays for x, y, and z coordinates of each
+point, unlike VRML, which has one array holding the unique coordinates of the
+vertexes, and another array which holds the vertex array index of the
+coordinates for each point.  To switch to a implementation closer to VRML would
+take a great deal of work, which would effectively amount to starting over from
+scratch
+
+Although the VRML style implementation would remove redundant information in th
+vertex array, it would also require the addition of the new index array.  The
+VRML style implementation could easily be extended to include an array for
+normals and color where this info would only need to be stored once per point
+at the corresponding index.
 
 
-2.
+2.  C(u) = (9.928, 2.101)
+
+    This answer was calculated by the simple function defined below.  The key to
+this solution is the recursion (1-u) * deCasteljau(i-1, j) + u * 
+deCasteljau(i-1, j+1).  What this does is weight each control point proportional
+to how far left or right they are.
+
+def deCasteljau(i, j) :
+    if i == 0 :
+        return points[j]
+    else :
+        x = ((1-u) * deCasteljau(i-1, j)[0]) + (u * deCasteljau(i-1, j+1)[0])
+        y = ((1-u) * deCasteljau(i-1, j)[1]) + (u * deCasteljau(i-1, j+1)[1])
+        return (x, y)
+
+print deCasteljau(n, 0)
 
 
-3.
+3.  In the case were there are three control points on each line, both the
+actual and approximation subdivision algorithm would produce a prism with
+rounded edge.  On the other hand, with control points only at the corners, the
+actual subdivision algorithm should produce a circle, while the approximation
+would produce a prism with rounded edges.
 
 
-4.
-
-
+4.  This project could easily be used to create objects with one or more holes,
+like a donut.  How we have implemented now, we add a control point before the
+first point at the height of the first point, but along the axis of rotation.
+We also do the same after the last point.  To create an object like a donut, we
+would not add these extra control points, instead we would close the cross
+section by add the first control point a second time after the last point.  Our
+project would work as is for an object with an open side, like a vase.  However,
+the control points would need to be added so that the cross section had some
+width.  Or, you could change the implementation so that control points
+1, 2, ..., n - 1, are added a second time, in reverse order, after the last
+point.

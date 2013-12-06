@@ -6,16 +6,66 @@
 // The maximum number of points allowed in the 4 Point Scheme
 #define MAX_POINT   30
 
-extern GLfloat i0_x[MAX_POINT];	// Iteration 0 control points, x
-extern GLfloat i0_y[MAX_POINT];	// Iteration 0 control points, y
-extern int num_i0_pts;			// The number of iteration 0 control points
+extern GLfloat originalCP_x[MAX_POINT];
+extern GLfloat originalCP_y[MAX_POINT];
+extern int originalCP;
 
-extern GLfloat *draw_x;		// Control points to be drawn, x
-extern GLfloat *draw_y;		// Control points to be drawn, y
-extern int num_draw_pts;    // The number of control points to draw
+
+extern GLfloat *gouraudCP_x;
+extern GLfloat *gouraudCP_y;
+extern GLfloat *gouraudCP_z;
+
+extern GLfloat *gouraudNorm_x;
+extern GLfloat *gouraudNorm_y;
+extern GLfloat *gouraudNorm_z;
+
+extern int gouraudVerticalCP;
+extern int gouraudRadialCP;
+
+
+extern GLfloat *phongCP_x;
+extern GLfloat *phongCP_y;
+extern GLfloat *phongCP_z;
+
+extern GLfloat *phongNorm_x;
+extern GLfloat *phongNorm_y;
+extern GLfloat *phongNorm_z;
+
+extern int phongVerticalCP;
+extern int phongRadialCP;
+
+
+extern int verticalSubLevel;
+extern int radialSubLevel;
+
+
+extern GLfloat shininess[1];
+extern GLfloat specular[4];
+extern GLfloat lightPosition[4];
+
+
+extern bool is3D;
+extern bool isWire;
+extern bool isPoints;
+extern bool isPhong;
+
 
 
 /* Functions implemented in data.cpp */
 void subdividePointsArray(int subdiv_level);
+
+void radialSubdivide(void);
+
+void verticalSubdivide(void);
+
+void add2dControlPoint(int,int); 
+
+void remove2dControlPoint(void);
+
+void generateRotationPoints(int n);
+
+void generateGouraud(void);
+
+void generatePhong(void);
 
 #endif	/* _DATA_H_ */

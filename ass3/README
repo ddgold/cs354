@@ -5,7 +5,12 @@
  * for compiling, etc., if you did something besides the standard
  * Makefile.  Also, document any additional features in this file.
  *
- * Group Members:
+ * Group Members: Doug Goldstein  ddg625
+ 				  Ryan Brooks  rpb562
  *
  */
 
+
+We added a functionality to move the light using the i, j, k, and l keys.  i and k move the light up and down along the y-axis, while j and l move the light right and left along the x-axis.
+
+Also, we choose to vary the shininess from 5 to 125 on intervals of 10. 
