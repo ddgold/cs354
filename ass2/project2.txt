@@ -1,17 +1,81 @@
 Project 2 Individual Written Questions
 
-Name:
-Email Address:
+Name: Doug Goldstein
+Email Address: ddgold@me.com
 
-1.
+1. a. Yes 
+Translate by <3 2 1> and <2 2 3>
+|1 0 0 3|   |1 0 0 2|   |1 0 0 5|   |1 0 0 2|   |1 0 0 3|
+|0 1 0 2| * |0 1 0 2| = |0 1 0 4| = |0 1 0 2| * |0 1 0 2|
+|0 0 1 1|   |0 0 1 3|   |0 0 1 4|   |0 0 1 3|   |0 0 1 1|
+|0 0 0 1|   |0 0 0 1|   |0 0 0 1|   |0 0 0 1|   |0 0 0 1|
+
+   b. No
+Translate by <3 2 1> and rotate by PI radians around X-axis
+|1 0 0 3|   |1  0  0 0|   |1 0 0 3|    |1  0  0 0|   |1 0 0 3|   |1  0  0  3|
+|0 1 0 2| * |0 -1  0 0| = |0 1 0 2| != |0 -1  0 0| * |0 1 0 2| = |0 -1  0 -2|
+|0 0 1 1|   |0  0 -1 0|   |0 0 1 1|    |0  0 -1 0|   |0 0 1 1|   |0  0 -1 -1|
+|0 0 0 1|   |0  0  0 1|   |0 0 0 1|    |0  0  0 1|   |0 0 0 1|   |0  0  0  1|
+
+   c. Yes
+Rotate by PI radians around Y-axis and PI radians around X-axis
+|-1 0  0 0|   |1  0  0 0|   |-1  0 0 0|   |1  0  0 0|   |-1 0  0 0|
+| 0 1  0 0| * |0 -1  0 0| = | 0 -1 0 0| = |0 -1  0 0| * | 0 1  0 0|
+| 0 0 -1 0|   |0  0 -1 0|   | 0  0 1 0|   |0  0 -1 0|   | 0 0 -1 0|
+| 0 0  0 1|   |0  0  0 1|   | 0  0 0 1|   |0  0  0 1|   | 0 0  0 1|
 
 
-2.
+2. a. Perspective so that you can look though the eyes of the character, and
+will be able to determine how far each object is from the player.
+
+   b. Orthographic because depth of field does not matter, and you want to be
+able to compare the size of different part of the plane.
+
+   c. Both because you would want to be able compare the size of different parts
+of the project, as well as view the build how a human would see it.
+
+   d. Orthographic so that the user can tell in what direction they were
+traveling on a top-down map of earth, like Google Maps.
+   
+
+3. Translations will only effect the last column, while the rotations will
+effect the other columns.  Therefore, any squence of translations and rotations
+can be reduced to a single translation then a rotation, or a rotation then a
+translations.  Note that this does not contradict quest 1b. becasue the
+translation then rotation matri would not be the same as the rotation then
+translation.
+
+|1 0 0 d|   |a b c 0|   |a b c d|
+|0 1 0 h| * |e f h 0| = |e f g h|
+|0 0 1 l|   |i j k 0|   |i j k l|
+|0 0 0 1|   |0 0 0 1|   |0 0 0 1|
+
+|m n o 0|   |1 0 0 p|   |m n o p|
+|q r s 0| * |0 1 0 t| = |q r s t|
+|u v w 0|   |0 0 1 x|   |u v w x|
+|0 0 0 1|   |0 0 0 1|   |0 0 0 1|
+
+4. Take a cross product of the line (P1 - P0) and (P3 - P0).  If the product is
+equal to zero, the polygon is co-planar.
 
 
-3.
+5. Assume the Sun and Earth both start at the origin.  All angles in degrees.
+| cos(15) 0 sin(15) 0|   |cos(23.5) -sin(23.5) 0 0|   |1 0 0 90000000|
+|    0    1    0    0| * |sin(23.5)  cos(23.5) 0 0| * |0 1 0    0    | * 
+|-sin(15) 0 cos(15) 0|   |   0          0      1 0|   |0 0 1    0    |
+|    0    0    0    1|   |   0          0      0 1|   |0 0 0    1    |
 
+| cos(0.986) 0 sin(0.986) 0|
+|    0       1       0    0| = 
+|-sin(0.986) 0 cos(0.986) 0|
+|    0       0       0    1|
 
-4.
+6. Use the fallowing L-system to produce Sierpinski gasket
+Axiom: F - F - F
+F -> S F - F + F + F - F
 
-
+Rules:
+F = Draw edge
+S = Scale by one half
+- = Rotate counter-clockwise by 120 deg.
++ = Rotate clockwise by 120 deg.

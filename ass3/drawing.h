@@ -8,4 +8,8 @@ extern int subdiv_h; // The user-specified subdivision level, horizontal
 /* Functions implemented in drawing.cpp */
 void drawSurface(void);
 
+void drawSurfaceGouraud(void);
+
+void drawSurfacePhong(void);
+
 #endif	/* _DRAWING_H_ */
