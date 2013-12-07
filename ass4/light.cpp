@@ -67,6 +67,9 @@ void shade(point* p, vector* n, material* m, vector* in, color* c, int d) {
   vector* s = makePoint(0, 0, 0);
   vector* v = makePoint( in->x * -1,  in->y * -1,  in->z * -1);
   vector* h = makePoint(0,0,0);
+  ray* shadowFeeler = (ray*)malloc(sizeof(ray));
+  shadowFeeler->start = makePoint(p->x + .0005 * v->x,p->y + .0005 * v->y,p->z + .0005 * v->z);
+  shadowFeeler->dir   = makePoint(0,0,0); 
 
   GLfloat lambert = 0.0;
   GLfloat phong = 0.0;
@@ -79,42 +82,47 @@ void shade(point* p, vector* n, material* m, vector* in, color* c, int d) {
   for(unsigned int i = 0; i < sizeof(lights)/sizeof(light*); ++i)
   {
     calculateDirection(p, lights[i]->p, s);
+    calculateDirection(shadowFeeler->start,lights[i]->p, shadowFeeler->dir);
 
-    h = makePoint(v->x + s->x, v->y + s->y, v->z + s->z);
-
-    lambert = dot(s,n);
-    phong = dot(h,n)/ sqrt(h->x*h->x + h->y*h->y + h->z*h->z);
-
-    if (test == 500)
+    //printf("entering shadow\n");
+    if(!shadow(shadowFeeler))
     {
-      printf("point: (%f, %f, %f, %f)\n", p->x, p->y, p->z, p->w);
-      printf("normal: (%f, %f, %f, %f)\n", n->x, n->y, n->z, n->w);
-      printf("view: (%f, %f, %f, %f)\n", in->x, in->y, in->z, in->w);
-      printf("light: (%f, %f, %f, %f)\n", s->x, s->y, s->z, s->w);
+      h = makePoint(v->x + s->x, v->y + s->y, v->z + s->z);
 
-      printf("lambert %f\n", lambert);
-      printf("phong %f\n", phong);
-      
+      lambert = dot(s,n);
+      phong = dot(h,n)/ sqrt(h->x*h->x + h->y*h->y + h->z*h->z);
+
+      if (test == 500)
+      {
+        printf("point: (%f, %f, %f, %f)\n", p->x, p->y, p->z, p->w);
+        printf("normal: (%f, %f, %f, %f)\n", n->x, n->y, n->z, n->w);
+        printf("view: (%f, %f, %f, %f)\n", in->x, in->y, in->z, in->w);
+        printf("light: (%f, %f, %f, %f)\n", s->x, s->y, s->z, s->w);
+
+        printf("lambert %f\n", lambert);
+        printf("phong %f\n", phong);
+        
+      }
+      ++test; 
+
+      // Difustion Portion
+      if(lambert > 0 )
+      {
+        c->r += lambert * lights[i]->c->r * m->dif * m->r;
+        c->g += lambert * lights[i]->c->g * m->dif * m->g;
+        c->b += lambert * lights[i]->c->b * m->dif * m->b;
+      }
+
+      // Spectrial Portion
+      if(phong > 0)
+      {
+        phong = pow(phong,m->expo);
+        c->r += phong * lights[i]->c->r * m->spec * m->r;
+        c->g += phong * lights[i]->c->g * m->spec * m->g;
+        c->b += phong * lights[i]->c->b * m->spec * m->b;
+      }
     }
-    ++test; 
-
-    // Difustion Portion
-    if(lambert > 0 )
-    {
-      c->r += lambert * lights[i]->c->r * m->dif * m->r;
-      c->g += lambert * lights[i]->c->g * m->dif * m->g;
-      c->b += lambert * lights[i]->c->b * m->dif * m->b;
-    }
-
-    // Spectrial Portion
-    if(phong > 0)
-    {
-      phong = pow(phong,m->expo);
-      c->r += phong * lights[i]->c->r * m->spec * m->r;
-      c->g += phong * lights[i]->c->g * m->spec * m->g;
-      c->b += phong * lights[i]->c->b * m->spec * m->b;
-    }
-
+    
   }
 
 
@@ -127,7 +135,22 @@ void shade(point* p, vector* n, material* m, vector* in, color* c, int d) {
 
 }
 
-bool shadow(vector *v)
+bool shadow(ray *r)
 {
-  return false;
+  point p;  /* first intersection point */
+  vector n;
+  material* m;
+
+  p.w = 0.0;  /* inialize to "no intersection" */
+  //printf("point: (%f, %f, %f)\n", r->start->x,  r->start->y,  r->start->z);
+  firstHit(r,&p,&n,&m);
+
+  if (p.w != 0.0) 
+  {
+    return true;
+  } 
+  else 
+  {             /* nothing was hit */
+    return false;
+  }
 }

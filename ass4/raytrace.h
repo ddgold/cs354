@@ -62,6 +62,7 @@ typedef struct light {
 
 /* functions in raytrace.cpp */
 void traceRay(ray*, color*, int);
+void firstHit(ray*,point*,vector*,material**);
 
 /* functions in geometry.cpp */
 sphere* makeSphere(GLfloat, GLfloat, GLfloat, GLfloat);
@@ -80,7 +81,7 @@ material* makeMaterial(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLf
 color* makeColor(GLfloat, GLfloat, GLfloat);
 light* makeLight(GLfloat, GLfloat, GLfloat);
 void shade(point*,vector*,material*,vector*,color*,int);
-bool shadow(vector*);
+bool shadow(ray*);
 
 /* global variables */
 extern int width;

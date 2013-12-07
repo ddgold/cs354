@@ -82,7 +82,7 @@ void initScene () {
   spheres[0]->m = makeMaterial(1.0,0.1,0.15,0.2,0.3,0.8,1.0);
 
   spheres[1] = makeSphere(0.1, 0.1,-2.0,0.1);
-  spheres[1]->m = makeMaterial(1.0,0.1,0.15,0.5,0.6,0.8,1.0);
+  spheres[1]->m = makeMaterial(1.0,1.0,1.0,0.5,0.6,0.8,1.0);
 
   lights[0] = makeLight(8.0, 8.0, -1.0);
   lights[0]->c = makeColor(1.0, 1.0, 1.0);
@@ -174,17 +174,23 @@ void firstHit(ray* r, point* p, vector* n, material* *m) {
   unsigned int minValue = -1;
   double distance = 0.0;
 
+  //printf("a\n");
   for(unsigned int i = 0; i < sizeof(spheres)/sizeof(sphere*); ++i)
   {
+    //printf("b\n");
     hit = raySphereIntersect(r,spheres[i],&t);
+   // printf("c\n");
     if (hit) 
     {
+      //printf("d\n");
       findPointOnRay(r,t,p);
 
+      //printf("e\n");
       distance =  (r->start->x - p->x) * (r->start->x - p->x);
       distance += (r->start->y - p->y) * (r->start->y - p->y);
       distance += (r->start->z - p->z) * (r->start->z - p->z);
       distance = sqrt(distance);
+
 
       if (distance < min)
       {
@@ -196,12 +202,16 @@ void firstHit(ray* r, point* p, vector* n, material* *m) {
 
   if (minValue == -1)
   {
+    //printf("z\n");
     p->w = 0.0;
   }
   else
   {
+    //printf("f\n");
     *m = spheres[minValue]->m;
+    //printf("g\n");
     findPointOnRay(r,t,p);
+    //printf("h\n");
     findSphereNormal(spheres[minValue],p,n);
   }
 }
