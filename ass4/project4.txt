@@ -1,14 +1,22 @@
 Project 4 Individual Written Questions 
 
-Name:
-Email Address:
+Name: Ryan Brooks
+Email Address: ryan.brooks2@yahoo.com
 
 1.
+a) running time would increase as it will have to compute the ray of more pixels.  will not inrease by much if the size the screen increases to is empty.
 
+b) all the sizes increase will incease running time as the objects are more likely hit and thus the recursion of each ray goes deeper.
 
-2.
+c) more objects are added will increase run time to compute the image because more objects are added so you have to check more objects shadows and draw more reflections.  more recursion with aded objects.
 
+2. 
+reflection - ray tracing,  because you can you can customize how deep the ray traces for a reflection giving you more control.
+transparency - ray tracing,  being able to specifiy the level of recursion as well as have control over the density of the materials(snells law) give you more power over openGL.
+shadows - opengl as it does not need the same accuracy as transparency and reflections
 
-3.
+3.  this could speed up the ray tracing algorithm as you could check for ray intersections with objects much faster.  if you know that the ray is going in a cetain direction then you only need to check the objects in the latices in that given direction.  this way you could avoid the intersection checking algorithm on al the objects by being more specific about which objects the ray is likely/possible to hit.
+
+4.  the current project is in perspective mode, this is because objects further back appear to decrease in size.  To turn this into a a othogonal projection we would change how the rays are shot out into the seen.  instead of originating from one points and changeing the angle of the vector, the vector would remain the same and the original point would change for each pixel.  the vector in the orthogonal projection will go perpendicular to the area of the "screen" and the screen is a 2d plane in space that the rays are shot out of.
 
 
