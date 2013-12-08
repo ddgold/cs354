@@ -28,7 +28,10 @@ void firstHit(ray*,point*,vector*,material**);
 /* local data */
 
 /* the scene: so far, just one sphere */
-sphere* spheres[2];
+int* objects[3];
+OBJTYPE types[3];
+
+//sphere* spheres[3];
 
 light* lights[2];
 
@@ -78,17 +81,31 @@ void display() {
 }
 
 void initScene () {
-  spheres[0] = makeSphere(0.0,0.0,-2.0,0.1);
-  spheres[0]->m = makeMaterial(1.0,0.1,0.15,0.2,0.3,0.8,1.0);
+  
+  objects[0] = (int*) makeSphere(0.2, 0.0, -1.5 ,0.1);
+  ((sphere*) objects[0])->m = makeMaterial(1.0, 0.1, 0.1, 0.2, 0.3, 0.8, 1.0, 0.8, 0.3);
+  types[0] = SPHERE;
+  
+  objects[1] = (int*) makeSphere(-0.2,0.0, -1.5,0.1);
+  ((sphere*) objects[1])->m = makeMaterial(0.1, 0.1, 1.1, 0.2, 0.3, 0.8, 1.0, 0.8, 1.0);
+  types[1] = SPHERE;
+  
+  objects[2] = (int*) makeSphere(0.2,-0.2, -2.5,0.15);
+  ((sphere*) objects[2])->m = makeMaterial(0.1, 0.1, 0.1, 0.2, 1.0, 0.4, 1.0, 0.61, 1.0);
+  types[2] = SPHERE;
 
-  spheres[1] = makeSphere(0.1, 0.1,-2.0,0.1);
-  spheres[1]->m = makeMaterial(1.0,1.0,1.0,0.5,0.6,0.8,1.0);
 
-  lights[0] = makeLight(8.0, 8.0, -1.0);
-  lights[0]->c = makeColor(1.0, 1.0, 1.0);
+  /*
+  objects[0] = (int*) makeCylinder(0.0, 0.0, 0.0, 0.1, 0.1);
+  ((cylinder*) objects[0])->m = makeMaterial(1.0, 0.1, 0.1, 0.2, 0.3, 0.8, 1.0, 0.8, 0.3);
+  types[0] = CYLINDER;
+  */
 
-  lights[1] = makeLight(-2.0, -2.0, 0.0);
-  lights[1]->c = makeColor(0.0, 0.0, 1.0);
+  lights[0] = makeLight(0.0, 0.0, -1.5);
+  lights[0]->c = makeColor(0.5, 0.5, 0.5);
+
+  lights[1] = makeLight(-1.0, 0.0, -1.0);
+  lights[1]->c = makeColor(0.5, 0.5, 0.5);
 }
 
 void initCamera (int w, int h) {
@@ -98,20 +115,24 @@ void initCamera (int w, int h) {
 }
 
 void drawScene () {
-  int i,j;
+  int i,j,k;
   GLfloat imageWidth;
   /* declare data structures on stack to avoid dynamic allocation */
-  point worldPix;  /* current pixel in world coordinates */
-  point direction; 
-  ray r;
-  color c;
+  point worldPix[4];  /* current pixel in world coordinates */
+  point direction[4]; 
+  ray r[4];
+  color c[4];
+  color avg;
 
-  /* initialize */
-  worldPix.w = 1.0;
-  worldPix.z = -pnear;
+  for (k = 0; k < 4; ++k)
+  {
+    /* initialize */
+    worldPix[k].w = 1.0;
+    worldPix[k].z = -pnear;
 
-  r.start = &worldPix;
-  r.dir= &direction;
+    r[k].start = &worldPix[k];
+    r[k].dir= &direction[k];
+  }
 
   imageWidth = 2*pnear*tan(fovx/2);
 
@@ -119,26 +140,55 @@ void drawScene () {
   for (i=0; i<width; i++) {
     /* Refresh the display */
     /* Comment this line out after debugging */
-    flushCanvas();
+    //flushCanvas();
 
-    for (j=0; j<height; j++) {
-
+    for (j=0; j<height; j++)
+    {
       /* find position of pixel in world coordinates */
-      /* y position = (pixel height/middle) scaled to world coords */ 
-      worldPix.y = (j-(height/2))*imageWidth/width;
-      /* x position = (pixel width/middle) scaled to world coords */ 
-      worldPix.x = (i-(width/2))*imageWidth/width;
+      /* y position = (pixel height/middle) scaled to world coords */
+      /* x position = (pixel width/middle) scaled to world coords */
 
-      /* find direction */
-      /* note: direction vector is NOT NORMALIZED */
-      calculateDirection(viewpoint,&worldPix,&direction);
+      worldPix[0].y = (j-(height/2))*imageWidth/width + 0.00045; 
+      worldPix[0].x = (i-(width/2))*imageWidth/width + 0.00045;
+      
+      worldPix[1].y = (j-(height/2))*imageWidth/width + 0.00045; 
+      worldPix[1].x = (i-(width/2))*imageWidth/width - 0.00045;
 
-      /* trace the ray! */
-      traceRay(&r,&c,0);
+      //printf("point: (%f, %f) (%f, %f)\n", worldPix[0].x, worldPix[0].y, worldPix[1].x, worldPix[1].y);
+
+      worldPix[2].y = (j-(height/2))*imageWidth/width - 0.00045; 
+      worldPix[2].x = (i-(width/2))*imageWidth/width + 0.00045;
+
+      worldPix[3].y = (j-(height/2))*imageWidth/width - 0.00045; 
+      worldPix[3].x = (i-(width/2))*imageWidth/width - 0.00045;
+
+      avg.r = 0;
+      avg.g = 0;
+      avg.b = 0;
+
+      for (k = 0; k < 4; ++k)
+      {
+        /* find direction */
+        /* note: direction vector is NOT NORMALIZED */
+        calculateDirection(viewpoint, &worldPix[k], &direction[k]);
+
+        /* trace the ray! */
+        traceRay(&r[k], &c[k], 0);
+
+        avg.r += c[k].r;
+        avg.g += c[k].g;
+        avg.b += c[k].b;
+      }
+
+      avg.r /= 4;
+      avg.g /= 4;
+      avg.b /= 4;
+
       /* write the pixel! */
-      drawPixel(i,j,c.r,c.g,c.b);
+      drawPixel(i, j, avg.r, avg.g, avg.b);
     }
   }
+  printf("done..\n");
 }
 
 /* returns the color seen by ray r in parameter c */
@@ -151,15 +201,15 @@ void traceRay(ray* r, color* c, int d) {
   p.w = 0.0;  /* inialize to "no intersection" */
   firstHit(r,&p,&n,&m);
 
+
   if (p.w != 0.0) {
     shade(&p,&n,m,r->dir,c,d);  /* do the lighting calculations */
-  } else {             /* nothing was hit */
+  }
+  else {             /* nothing was hit */
     c->r = 0.0;
     c->g = 0.0;
     c->b = 0.0;
   }
-
- // printf("color: (%f, %f, %f)\n", c->r, c->g, c->b);
 
 }
 
@@ -175,11 +225,21 @@ void firstHit(ray* r, point* p, vector* n, material* *m) {
   double distance = 0.0;
 
   //printf("a\n");
-  for(unsigned int i = 0; i < sizeof(spheres)/sizeof(sphere*); ++i)
+  for(unsigned int i = 0; i < sizeof(objects)/sizeof(int*); ++i)
   {
-    //printf("b\n");
-    hit = raySphereIntersect(r,spheres[i],&t);
-   // printf("c\n");
+    switch(types[i])
+    {
+      case SPHERE:
+        hit = raySphereIntersect(r, (sphere*) objects[i], &t);
+        break;
+      case CYLINDER:
+        hit = rayCylinderIntersect(r, (cylinder*) objects[i], &t);
+        break;
+      case PLANE:
+        hit = rayPlaneIntersect(r, (inf_plane*) objects[i], &t);
+        break;
+    }
+   
     if (hit) 
     {
       //printf("d\n");
@@ -207,12 +267,23 @@ void firstHit(ray* r, point* p, vector* n, material* *m) {
   }
   else
   {
-    //printf("f\n");
-    *m = spheres[minValue]->m;
-    //printf("g\n");
     findPointOnRay(r,t,p);
-    //printf("h\n");
-    findSphereNormal(spheres[minValue],p,n);
+    
+    switch(types[minValue])
+    {
+      case SPHERE:
+        findSphereNormal((sphere*) objects[minValue],p,n);
+        *m = ((sphere*) objects[minValue])->m;
+        break;
+      case CYLINDER:
+        findCylinderNormal((cylinder*) objects[minValue],p,n);
+        *m = ((cylinder*) objects[minValue])->m;
+        break;
+      case PLANE:
+        findPlaneNormal((inf_plane*) objects[minValue],p,n);
+        *m = ((inf_plane*) objects[minValue])->m;
+        break;
+    }
   }
 }
 
